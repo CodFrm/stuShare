@@ -1,0 +1,24 @@
+{include 'login/header'}
+<div class="login-from">
+    <div class="login-header">
+        <img src="__HOME__/template/image/avatar.jpg" alt="">
+    </div>
+    <div class="login-content" style="text-align: center">
+        <h1>{$error}</h1>
+        <h3>3秒后跳转到页面</h3>
+    </div>
+    <div class="login-footer" style="text-align: center; height: 65px;">
+        <button id="to" style="width: 120px;height: 45px;float: inherit;font-size: 16px;font-weight: bold">点击立即跳转</button>
+    </div>
+</div>
+<script>
+    setTimeout(function () {
+        window.location='{$url}';
+    },3000);
+    $(document).ready(function () {
+        $('#to').click(function () {
+            window.location='{$url}';
+        });
+    });
+</script>
+{include 'login/footer'}

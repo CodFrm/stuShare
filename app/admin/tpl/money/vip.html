@@ -1,0 +1,43 @@
+{include 'public/header'}
+<body>
+<div class="header">
+    <div class="title">
+        <img src="__HOME__/template/image/avatar.jpg" alt="">
+        <span>stuShare</span>
+    </div>
+</div>
+<div class="content">
+    <div class="user-msg">
+        <div class="select-month">
+            <span>充值月数:</span><input id="month" type="text" value="1"><span style="font-size: 12px;margin-left: 10px;">每月20元</span>
+            <br>
+            <span>将付款: <span id="pay">20</span>元</span>
+        </div>
+        <div class="menu">
+            <a id="kt" class="menu-item">确定开通</a>
+            <a href="{:url('admin/index/index')}" class="menu-item">返回首页</a>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#month').on('input', function () {
+            $('#pay').text($('#month').val() * 20);
+        });
+        $('#kt').click(function () {
+            var month = $('#month').val();
+            $.ajax({
+                url: "{:url('admin/money/vip')}",
+                type: 'POST',
+                data: {month:month},
+                success: function (json) {
+                    alert(json['msg']);
+                    if (json['code'] == 0) {
+
+                    }
+                }
+            });
+        });
+    });
+</script>
+{include 'public/footer'}

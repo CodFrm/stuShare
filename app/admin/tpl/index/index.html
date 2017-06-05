@@ -1,0 +1,25 @@
+{include 'public/header'}
+<body>
+<div class="header">
+    <div class="title">
+        <img src="__HOME__/template/image/avatar.jpg" alt="">
+        <span>stuShare</span>
+    </div>
+</div>
+<div class="content">
+    <div class="user-msg">
+        <div class="avatar">
+            <img src="__HOME__/template/image/user.png" alt="">
+            <span>用户名:{$user}</span>
+            <br>
+            <span style="font-size:18px">账户余额:{$money}￥</span>
+            <div class="vip">VIP{$grade}</div>
+            <p>到期时间:{$expire}</p>
+        </div>
+        <div class="menu">
+            <a href="{:url('admin/money/vip')}" class="menu-item">开通/续费VIP</a>
+            <a href="{:url('admin/money/recharge')}" class="menu-item">充值 <span style="font-size: 10px;float: right;">充钱你才能变强</span></a>
+        </div>
+    </div>
+</div>
+{include 'public/footer'}

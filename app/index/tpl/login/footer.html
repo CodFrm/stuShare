@@ -1,0 +1,49 @@
+</body>
+<script>
+    $(document).ready(function () {
+        $('#login').click(function () {
+            var user = $('#user').val();
+            var pwd = $('#pwd').val();
+            $.ajax({
+                url: '{:url('index/login/login')}',
+                type: 'POST',
+                data: {user: user, pwd: pwd},
+                success: function (json) {
+                    alert(json['msg']);
+                    if(json['code']==0){
+                        window.location='{:url('admin/index/index')}';
+                    }
+                }
+            });
+        });
+        $('#reg').click(function () {
+            var user = $('#user').val();
+            var pwd = $('#pwd').val();
+            var confirm = $('#confirm').val();
+            var email = $('#email').val();
+            var inv_code = $('#invite_code').val();
+            if (pwd != confirm) {
+                alert('两次输入的密码不同');
+            } else {
+                $.ajax({
+                    url: '{:url('index/login/register')}',
+                    type: 'POST',
+                    data: {user: user, pwd: pwd,email:email,inv_code:inv_code},
+                    success: function (json) {
+                        alert(json['msg']);
+                        if(json['code']==0) {
+                            window.location = '{:url('index/login/login')}';
+                        }
+                    }
+                });
+            }
+        });
+        $('#to-reg').click(function () {
+            window.location = '{:url('index/login/register')}';
+        });
+        $('#to-login').click(function () {
+            window.location = '{:url('index/login/login')}';
+        });
+    });
+</script>
+</html>

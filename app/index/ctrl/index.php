@@ -12,7 +12,7 @@
 namespace app\index\ctrl;
 class index {
     function index() {
-        return '我是首页';
+        return '我是首页 <br><a href="'.url('index/login/login').'">点我登陆</a>';
     }
     function error(){
         V()->assign('title','错误页面');

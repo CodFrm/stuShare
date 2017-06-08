@@ -39,10 +39,11 @@ class money extends auth {
             }
             echo $ret;
         }
-        //将到期用户更改用户组
+        //将到期用户更改用户组 密码
         $red = DB('user')->select(['expire_time' => [time(), '<']]);
         while ($row = $red->fetch()) {
             DB(':radusergroup')->update(['groupname' => 'VIP0'], ['username' => $row['user']]);
+            DB(':radcheck')->update(['op' => '='], ['username' => $row['user']]);
         }
     }
 
@@ -76,6 +77,7 @@ class money extends auth {
                     }
                     DB(':radusergroup')->update(['groupname' => 'VIP1'], ['username' => $userMsg['user']]);
                     DB('user')->update(['expire_time' => $extime], ['uid' => $userMsg['uid']]);
+                    DB(':radcheck')->update(['op' => ':=', ['username' => $userMsg['user']]]);
                 }
             }
             return json($json);

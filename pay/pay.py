@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import urllib2
 import cookielib
 import time
@@ -22,12 +23,12 @@ f.close()
 
 def dealOrder(html):
     orderList = re.findall(
-        'data-clipboard-text="(.*?)"[\s\S]*?<span class="amount-pay">\+ (.*?)</span>[\s\S]*?data-info="(.*?)" data-type="memo" data-bizId="biz(.*?)"', html)
+        '<span class="amount-pay">\+ (.*?)</span>[\s]*?</td>[\s]*?<td class="detail">[\s]*?<div class="icon-group">[\s]*?<a class=".*?[\s]*?.*?</a>[\s]*?<span class="record-icon icon-memo " data-info="(.*?)" data-type="memo" data-bizId="biz(.*?)"', html)
     print orderList
     for arr in orderList:
-        if arr[0] == arr[3]:
+        if arr.count >= 3:
             GetHttp('http://127.0.0.1/stushare/admin/money/pay_call?order=' +
-                    arr[0] + '&money=' + arr[1] + '&remarks=' + arr[2])
+                    arr[2] + '&money=' + arr[0] + '&remarks=' + arr[1])
 
 
 def GetHttp(url):
@@ -41,8 +42,6 @@ def GetHttp(url):
             'Accept-Language': 'zh-CN,zh;q=0.8,en-US;q=0.6,en;q=0.4'})
         res = opear.open(req)
         data = res.read()
-        f = open('var1.html', 'w')
-        f.write(data)
     except:
         print url
     else:
@@ -75,6 +74,9 @@ def monitor():
         GetHttp('https://uninav.alipay.com/nav/data.json?_callback=jQuery17206489527233979464_1496670121316&_input_charset=utf-8&ctoken=4DUq81egwZnAf1Cj&_=1496670121605')
         GetHttp('https://lab.alipay.com/user/msgcenter/getMsgInfosNew.json?_callback=jQuery17206489527233979464_1496670121317&_input_charset=utf-8&ctoken=4DUq81egwZnAf1Cj&_=1496670121789')
         data = GetHttp('https://consumeprod.alipay.com/record/standard.htm')
+        f = open('var1.html', 'w')
+        f.write(data)
+        f.close()
         dealOrder(data)
         time.sleep(10)
         i += 1

@@ -53,7 +53,7 @@ class login {
                 DB('user')->insert($data);
                 DB('inv_code')->update(['inv_use_uid'=>DB()->lastinsertid(),'inv_use_time'=>time()],['inv_code'=>$_POST['inv_code']]);
                 DB(':radusergroup')->insert(['username'=>$data['user'],'groupname'=>'VIP0']);
-                DB(':radcheck')->insert(['username'=>$data['user'],'attribute'=>'Cleartext-Password','op'=>':=','value'=>$data['password']]);
+                DB(':radcheck')->insert(['username'=>$data['user'],'attribute'=>'Cleartext-Password','op'=>'==','value'=>$data['password']]);
             } else {
                 $json['msg'] = $ret;
             }

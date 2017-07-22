@@ -1,0 +1,10 @@
+obj/
+/.vs
+
+# 去掉debug版本 留下发行版本
+[Dd]ebug/
+[Rr]elease/*
+
+# 去掉临时的文件
+*.TMP
+*.tmp

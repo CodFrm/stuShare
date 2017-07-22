@@ -20,10 +20,15 @@ class login {
             ], $data);
             if ($ret === true) {
                 if ($userMsg = getUser($_POST['user'])) {
-                    setcookie('token',getToken($userMsg['uid']),time()+86400,'/');
-                    setcookie('uid',$userMsg['uid'],time()+86400,'/');
-                    $json['code']=0;
-                    $json['msg']='登陆成功';
+                    if($userMsg['password']==$_POST['pwd']){
+                        setcookie('token',getToken($userMsg['uid']),time()+86400,'/');
+                        setcookie('uid',$userMsg['uid'],time()+86400,'/');
+                        $json['code']=0;
+                        $json['msg']='登陆成功';
+                    }else {
+                        $json['code']=-1;
+                        $json['msg']='密码错误';
+                    }
                 } else {
                     $json['msg'] = '账号不存在';
                 }
@@ -53,7 +58,7 @@ class login {
                 DB('user')->insert($data);
                 DB('inv_code')->update(['inv_use_uid'=>DB()->lastinsertid(),'inv_use_time'=>time()],['inv_code'=>$_POST['inv_code']]);
                 DB(':radusergroup')->insert(['username'=>$data['user'],'groupname'=>'VIP0']);
-                DB(':radcheck')->insert(['username'=>$data['user'],'attribute'=>'Cleartext-Password','op'=>'==','value'=>$data['password']]);
+                DB(':radcheck')->insert(['username'=>$data['user'],'attribute'=>'Cleartext-Password','op'=>'=','value'=>$data['password']]);
             } else {
                 $json['msg'] = $ret;
             }

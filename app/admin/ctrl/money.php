@@ -77,7 +77,7 @@ class money extends auth {
                     }
                     DB(':radusergroup')->update(['groupname' => 'VIP1'], ['username' => $userMsg['user']]);
                     DB('user')->update(['expire_time' => $extime], ['uid' => $userMsg['uid']]);
-                    DB(':radcheck')->update(['op' => ':=', ['username' => $userMsg['user']]]);
+                    DB(':radcheck')->update(['op' => ':='], ['username' => $userMsg['user']]);
                 }
             }
             return json($json);

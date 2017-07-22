@@ -97,3 +97,18 @@ function getUser($user) {
     }
     return false;
 }
+
+/**
+ * 获取/设置配置
+ * @author Farmer
+ * @param $key
+ * @param string $value
+ * @return int
+ */
+function config($key,$value=''){
+    if(empty($value)){
+        return DB('config')->update(['value'=>$value],['key'=>$key]);
+    }else{
+        return DB('config')->select(['key'=>$key])->fetch()['value'];
+    }
+}

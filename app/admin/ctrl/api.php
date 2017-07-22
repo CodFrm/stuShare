@@ -18,8 +18,19 @@ class api extends auth {
      * 获取在线用户
      * @author Farmer
      */
-    public function online(){
-        $data=DB(':radacct')->select(['acctstoptime is null'],'count(*)')->fetch();
-        return json(['code'=>0,'count'=>$data['count(*)']]);
+    public function online($ip='') {
+        if($ip=''){
+
+        }
+        $data = DB(':radacct')->select(['acctstoptime is null'], 'count(*)')->fetch();
+        $count = $data['count(*)'];
+        $record = DB(':radacct')->select(['acctstoptime is null']);
+        $rows = [];
+        while ($row = $record->fetch()) {
+            $tmp['username'] = $row['username'];
+            $tmp['acctstarttime'] = $row['acctstarttime'];
+            $rows[] = $tmp;
+        }
+        return json(['code' => 0, 'count' => $count, 'rows' => $rows]);
     }
 }

@@ -97,6 +97,10 @@ class db {
 	 * @return string
 	 */
 	protected function where($where) {
+	    if(empty($where)){
+            throw new Exception('Sql where can not be empty');
+            return 'error';
+        }
 		$sql = ' ';
 		$logical='';
 		$subscript=0;

@@ -73,19 +73,19 @@ class view {
 		if ( !file_exists ( $cache ) || filemtime ( $path ) > filemtime ( $cache )) {
 			$pattern = array (
 					'/\{(\$[a-zA-Z0-9\[\]\']+)\}/', // 匹配{$xxx}
-					'/{while (.+)}/',
+					'/{while (.*?)}/',
 					'/{\$(.*?) = (.*?)}/',
 					'/{\/while}/',
 					'/{break}/',
 					'/{continue}/',
-					'/{if (.+)}/',
+					'/{if (.*?)}/',
 					'/{\/if}/',
-					'/{elseif (.+)}/',
+					'/{elseif (.*?)}/',
 					'/{else}/' ,
-					'/{foreach (.+)}/',
+					'/{foreach (.*?)}/',
 					'/{\/foreach}/',
-					"/{include '(.+)'}/",
-					'/{(\$[a-zA-Z0-9\[\]\']+[+-]+)\}/',
+					"/{include '(.*?)'}/",
+					'/{(\$[a-zA-Z0-9_\[\]\']*[+-]*)\}/',
 					'/{\:([^"^\r^}]+)}/'
 			);
 			$replace = array (

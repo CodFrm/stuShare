@@ -1,4 +1,4 @@
-/app/cache/tpl/*
+/app/cache/tpl/*.php
 .idea
 cookie.txt
 var.html

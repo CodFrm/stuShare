@@ -114,7 +114,7 @@ class route {
                 // 参数绑定
                 $param = array();
                 foreach ($method->getParameters() as $value) {
-                    if (input('get.' . $value->getName())) {
+                    if (input('get.' . $value->getName())!==false) {
                         $param [] = input('get.' . $value->getName());
                     } else {
                         $param [] = $value->getDefaultValue();

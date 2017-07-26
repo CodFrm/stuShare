@@ -8,7 +8,7 @@
  *============================
  */
 
-namespace app\admin\ctrl;
+namespace app\user\ctrl;
 
 
 use app\common\ctrl\auth;

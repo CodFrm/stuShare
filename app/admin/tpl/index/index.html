@@ -1,29 +1,7 @@
 {include 'public/header'}
-<body>
-<div class="header">
-    <div class="title">
-        <img src="__HOME__/static/image/avatar.jpg" alt="">
-        <span>stuShare</span>
-    </div>
-</div>
-<div class="content">
-    <div class="user-msg">
-        <div class="avatar">
-            <img src="__HOME__/static/image/user.png" alt="">
-            <span>用户名:{$user}</span>
-            <br>
-            <span style="font-size:18px">账户余额:{$money}￥</span>
-            <div class="vip">VIP{$grade}</div>
-            <p>到期时间:{$expire}</p>
-        </div>
-        <div class="menu">
-            <a href="{:url('admin/money/vip')}" class="menu-item">开通/续费VIP</a>
-            <a href="{:url('admin/money/recharge')}" class="menu-item">充值 <span style="font-size: 10px;float: right;">充钱你才能变强</span></a>
-            <a href="__HOME__/static/client.zip" class="menu-item">客户端下载</a>
-            <p class="menu-item">现在由于期末,所以收费10元/月</p>
-            <p class="menu-item">新用户请先点击充值,扫描二维码,冲够足够的钱 <span style="color: #FF0000">(注意在备注中打上自己的用户名,否则无法自动到账!)</span></p>
-            <p class="menu-item">充值到账后点击 开通/续费VIP</p>
-        </div>
-    </div>
+<!-- 内容区域 -->
+<div class="tpl-content-wrapper">
+
+
 </div>
 {include 'public/footer'}

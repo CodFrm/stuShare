@@ -72,7 +72,7 @@ class view {
 		$fileData = file_get_contents ( $path );
 		if ( !file_exists ( $cache ) || filemtime ( $path ) > filemtime ( $cache )) {
 			$pattern = array (
-					'/\{(\$[a-zA-Z0-9\[\]\']+)\}/', // 匹配{$xxx}
+					'/\{(\$[\w\[\]\']+)\}/', // 匹配{$xxx}
 					'/{while (.*?)}/',
 					'/{\$(.*?) = (.*?)}/',
 					'/{\/while}/',
@@ -85,7 +85,7 @@ class view {
 					'/{foreach (.*?)}/',
 					'/{\/foreach}/',
 					"/{include '(.*?)'}/",
-					'/{(\$[a-zA-Z0-9_\[\]\']*[+-]*)\}/',
+					'/{(\$[\w\[\]\']*[+-]*)\}/',
 					'/{\:([^"^\r^}]+)}/'
 			);
 			$replace = array (

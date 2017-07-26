@@ -1,0 +1,110 @@
+{include 'public/header'}
+<!-- 内容区域 -->
+<div class="tpl-content-wrapper">
+    <div class="row-content am-cf">
+        <div class="row">
+            <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                <div class="widget am-cf">
+                    <div class="widget-head am-cf">
+                        <div class="widget-title  am-cf">文章列表</div>
+                    </div>
+                    <div class="widget-body  am-fr">
+
+                        <div class="am-u-sm-12 am-u-md-6 am-u-lg-6">
+                            <div class="am-form-group">
+                                <div class="am-btn-toolbar">
+                                    <div class="am-btn-group am-btn-group-xs">
+                                        <a href="{:url('admin/movie/edit')}" type="button"
+                                           class="am-btn am-btn-default am-btn-success"><span
+                                                class="am-icon-plus"></span> 新增
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="am-u-sm-12 am-u-md-12 am-u-lg-3" style="float:right;">
+                            <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
+                                <input type="text" class="am-form-field ">
+                                <span class="am-input-group-btn">
+            <button class="am-btn  am-btn-default am-btn-success tpl-table-list-field am-icon-search"
+                    type="button"></button>
+          </span>
+                            </div>
+                        </div>
+
+                        <div class="am-u-sm-12">
+                            <table width="100%" class="am-table am-table-compact am-table-striped tpl-table-black "
+                                   id="example-r">
+                                <thead>
+                                <tr>
+                                    <th>影视标题</th>
+                                    <th>提交者</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {foreach $movie_list as $item}
+                                <tr class="gradeX">
+                                    <td>{$item['name']}</td>
+                                    <td>{$item['user']}</td>
+                                    <td>{if $item['status']==0}审核中{else}通过{/if}</td>
+                                    <td>
+                                        <div class="tpl-table-black-operation">
+                                            <a href="{:url('admin/movie/edit','vid='.$item['vid'])}">
+                                                <i class="am-icon-pencil"></i> 编辑
+                                            </a>
+                                            <a href="{:url('admin/movie/delete','vid='.$item['vid'])}"
+                                               class="tpl-table-black-operation-del">
+                                                <i class="am-icon-trash"></i> 删除
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {/foreach}
+                                <!-- more data -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="am-u-lg-12 am-cf">
+
+                            <div class="am-fr">
+                                <ul class="am-pagination tpl-pagination">
+                                    {if $page!=1}
+                                    <li><a href="{:url('admin/movie/index','page='.($page-1))}">«</a></li>
+                                    {/if}
+                                    {if $page<4}
+                                    {while ++$i<=8}
+                                    <li
+                                    {if $page==$i} class="am-active"{/if}><a
+                                        href="{:url('admin/movie/index','page='.$i)}">{$i}</a></li>
+                                    {/while}
+                                    {elseif $page>=$pageAll-4}
+                                    <?php $i=$pageAll-8;?>
+                                    {while ++$i<=$pageAll}
+                                    <li
+                                    {if $page==$i} class="am-active"{/if}><a
+                                        href="{:url('admin/movie/index','page='.$i)}">{$i}</a></li>
+                                    {/while}
+                                    {else}
+                                    <?php $i=$page-4;?>
+                                    {while ++$i<=$page+4}
+                                    <li
+                                    {if $page==$i} class="am-active"{/if}><a
+                                        href="{:url('admin/movie/index','page='.$i)}">{$i}</a></li>
+                                    {/while}
+                                    {/if}
+                                    {if $page!=$pageAll}
+                                    <li><a href="{:url('admin/movie/index','page='.($page+1))}">»</a></li>
+                                    {/if}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    {include 'public/footer'}

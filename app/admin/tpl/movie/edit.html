@@ -1,0 +1,232 @@
+{include 'public/header'}
+<!-- 内容区域 -->
+<div class="tpl-content-wrapper">
+    <div class="row-content am-cf">
+        <div class="widget am-cf">
+            <div class="widget-head am-cf">
+                <div class="widget-title am-fl">影视编辑</div>
+                <div class="widget-function am-fr">
+                    <a href="javascript:;" class="am-icon-cog"></a>
+                </div>
+            </div>
+            <div class="widget-body am-fr">
+
+                <form class="am-form tpl-form-line-form">
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3 am-form-label">影视名称 <span
+                                class="tpl-form-line-small-title">Name</span></label>
+                        <div class="am-u-sm-9">
+                            <input type="text" class="tpl-form-input" id="name"
+                                   value="{$video['name']}">
+                            <input type="hidden" value="{$video['vid']}" id="vid">
+                            <small>影视的名称</small>
+                        </div>
+                    </div>
+                    {if $video['father_vid']!==-1}
+                    <input type="hidden" value="{$fvid}" id="fvid">
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3 am-form-label">集数</label>
+                        <div class="am-u-sm-9">
+                            <input type="text" class="tpl-form-input" id="status"
+                                   value="{$video['status']}">
+                            <small>这是第几集</small>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3 am-form-label">支付金额 <span
+                                class="tpl-form-line-small-title">Pay</span></label>
+                        <div class="am-u-sm-9">
+                            <input type="text" class="tpl-form-input" id="pay"
+                                   value="{$video['pay']}">
+                            <small>观看次影视需要多少积分</small>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3 am-form-label">下载链接 <span
+                                class="tpl-form-line-small-title">Url</span></label>
+                        <div class="am-u-sm-9">
+                            <input type="text" class="tpl-form-input" id="url"
+                                   value="{$video['url']}">
+                            <small>影视的下载链接</small>
+                        </div>
+                    </div>
+                    {else}
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3 am-form-label">图片链接 <span
+                                class="tpl-form-line-small-title">Image</span></label>
+                        <div class="am-u-sm-9">
+                            <input type="text" class="tpl-form-input" id="image_url"
+                                   value="{$video['image_url']}">
+                            <small>影视封面图片</small>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3 am-form-label">类别 <span
+                                class="tpl-form-line-small-title">Type</span></label>
+                        <div class="am-u-sm-9">
+                            <input type="text" class="tpl-form-input" id="type"
+                                   value="{$video['type']}">
+                            <small>影视的分类</small>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3 am-form-label">是否收费 <span
+                                class="tpl-form-line-small-title">Pay</span></label>
+                        <div class="am-u-sm-9">
+                            <input type="text" class="tpl-form-input" id="pay"
+                                   value="{$video['pay']}">
+                            <small>0为不收费,大于0则收费</small>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3 am-form-label">发布时间 <span
+                                class="tpl-form-line-small-title">Release_time</span></label>
+                        <div class="am-u-sm-9">
+                            <input type="text" class="tpl-form-input" id="release_time"
+                                   value="{$video['release_time']}">
+                            <small>影视的发布时间</small>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3 am-form-label">评分 <span
+                                class="tpl-form-line-small-title">Mark</span></label>
+                        <div class="am-u-sm-9">
+                            <input type="text" class="tpl-form-input" id="mark"
+                                   value="{$video['mark']}">
+                            <small>影视评分</small>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3 am-form-label">影片简介</label>
+                        <div class="am-u-sm-9">
+                            <textarea class="" rows="10" id="introduction"
+                                      placeholder="请输入文章内容">{$video['introduction']}</textarea>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3 am-form-label">发布</label>
+                        <div class="am-u-sm-9">
+                            <div class="tpl-switch">
+                                <input type="checkbox" id="status" class="ios-switch bigswitch tpl-switch-btn" {if $video['status']!==0}checked=""{/if}>
+                                <div class="tpl-switch-btn-view">
+                                    <div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="widget am-cf">
+                        <div class="widget-head am-cf">
+                            <div class="widget-title am-fl">剧集列表</div>
+                            <div class="widget-function am-fr">
+                                <a href="javascript:;" class="am-icon-cog"></a>
+                            </div>
+                        </div>
+                        <div class="widget-body  widget-body-lg am-fr">
+                            <div class="am-u-sm-12 am-u-md-6 am-u-lg-6">
+                                <div class="am-form-group">
+                                    <div class="am-btn-toolbar">
+                                        <div class="am-btn-group am-btn-group-xs">
+                                            <a target="_blank" href="{:url('admin/movie/edit','fvid='.$video['vid'])}" type="button"
+                                               class="am-btn am-btn-default am-btn-success"><span
+                                                    class="am-icon-plus"></span> 新增
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <table width="100%" class="am-table am-table-compact tpl-table-black " id="example-r">
+                                <thead>
+                                <tr>
+                                    <th>标题</th>
+                                    <th>集数</th>
+                                    <th>支付金额</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {foreach $video['child'] as $item}
+                                <tr class="gradeX">
+                                    <td>{$item['name']}</td>
+                                    <td>{$item['status']}</td>
+                                    <td>{$item['pay']}</td>
+                                    <td>
+                                        <div class="tpl-table-black-operation">
+                                            <a target="_blank" href="{:url('admin/movie/edit','vid='.$item['vid'].'&fvid='.$video['vid'])}">
+                                                <i class="am-icon-pencil"></i> 编辑
+                                            </a>
+                                            <a href="{:url('admin/movie/delete','vid='.$item['vid'])}"
+                                               class="tpl-table-black-operation-del">
+                                                <i class="am-icon-trash"></i> 删除
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {/foreach}
+
+                                <!-- more data -->
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                    {/if}
+
+                    <div class="am-form-group">
+                        <div class="am-u-sm-9 am-u-sm-push-3">
+                            <button type="button" class="am-btn am-btn-primary tpl-btn-bg-color-success "
+                                    onclick="post(this)">提交
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include 'public/footer'}
+<script>
+    function post() {
+        var name = $('#name').val();
+        var url = $('#url').val();
+        var image_url = $('#image_url').val();
+        var type = $('#type').val();
+        var pay = $('#pay').val();
+        var release_time = $('#release_time').val();
+        var mark = $('#mark').val();
+        var introduction = $('#introduction').val();
+        {if $video['father_vid']!==-1}
+        var status = $('#status').val();
+        {else}
+        var status = $('#status').is(':checked');
+        {/if}
+        var vid = $('#vid').val();
+        var fvid = $('#fvid').val();
+        if(vid==undefined){
+            vid=0;
+        }
+        if(fvid==undefined){
+            fvid=0;
+        }
+        $.ajax({
+            url: "{:url('admin/movie/post')}?vid=" + vid + "&fvid=" + fvid,
+            type: "post",
+            data: {
+                name: name, image_url: image_url, type: type,
+                pay: pay,
+                mark: mark,
+                introduction: introduction,
+                status: status,
+                release_time: release_time,
+                url:url
+            },
+            success: function (obj) {
+                alert(obj['msg']);
+                if (obj['code'] == 1) {
+                    window.location = "{:url('admin/movie/index')}";
+                }
+            }
+        });
+    }
+</script>

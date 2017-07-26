@@ -8,7 +8,7 @@
  *============================
  */
 
-namespace app\admin\ctrl;
+namespace app\user\ctrl;
 
 
 use app\common\ctrl\auth;
@@ -19,7 +19,7 @@ class money extends auth {
         V()->display();
     }
 
-    private $iplist = ['127.0.0.1','localhost'];
+    private $iplist = ['127.0.0.1', 'localhost'];
 
     public function pay_call() {
         if (in_array(getIP(), $this->iplist)) {

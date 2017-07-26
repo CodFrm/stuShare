@@ -11,7 +11,8 @@
 namespace app\common\ctrl;
 
 class auth {
-    static $whitelist = ['pay_call'];
+    static $whitelist = ['pay_call','mlist','volume'];
+    protected $userMsg;
     public function __construct() {
         if (!in_array(input('action'), auth::$whitelist)) {
             if (!isset($_COOKIE['uid']) || !isset($_COOKIE['token'])) {
@@ -21,11 +22,22 @@ class auth {
                 header('Location:'.url('index/index/error','error=请登录后操作&url='.url('index/login/login')));
                 exit();
             }
-            $userMsg=uidUser($_COOKIE['uid']);
-            V()->assign('user',$userMsg['user']);
-            V()->assign('money',$userMsg['money']);
-            V()->assign('expire',($userMsg['expire_time']<time()?'已过期':date('Y-m-d h:i:s',$userMsg['expire_time'])));
-            V()->assign('grade',$userMsg['grade']);
+            $this->userMsg=uidUser($_COOKIE['uid']);
+            $this->userMsg['group']=getGroup($_COOKIE['uid']);
+            foreach ($this->userMsg['group'] as $item) {
+                if(isAuth($item['group_id'])){
+                    $auth=true;
+                    break;
+                }
+            }
+            if($auth!==true){
+                header('Location:'.url('index/index/error','error=你没有相应的权限&url='.url('user/index/index')));
+                exit();
+            }
+            V()->assign('user',$this->userMsg['user']);
+            V()->assign('money',$this->userMsg['money']);
+            V()->assign('ctrl',input('ctrl'));
+            V()->assign('action',input('action'));
         }
     }
 
@@ -46,7 +58,7 @@ class auth {
 function implodes($glue,$array){
     $ret='';
     foreach($array as $key=>$value){
-        $ret.="$key=>$value".',';
+        $ret.="$key=>$value".$glue;
     }
     return $ret;
 }

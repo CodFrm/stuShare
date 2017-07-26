@@ -2,7 +2,7 @@
 /**
  *============================
  * author:Farmer
- * time:2017/6/5 0:00
+ * time:2017/7/7 22:46
  * blog:blog.icodef.com
  * function:
  *============================
@@ -15,7 +15,13 @@ use app\common\ctrl\auth;
 
 class index extends auth {
     public function index() {
-        V()->assign('title','用户主页');
+        V()->assign('title','首页');
         V()->display();
     }
+
+    public function logout() {
+        setcookie('token', '', 0, '/');
+        header('Location: ' . url('index/login/login'));
+    }
+
 }

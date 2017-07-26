@@ -18,7 +18,7 @@
 function getToken($uid) {
     $token = getRandString(8, 2) . time();
     DB('token')->insert(['uid' => $uid, 'token' => $token, 'time' => time()]);
-    DB('token')->delete(['time<'.(time().-604800)]);
+    DB('token')->delete(['time<' . (time() . -604800)]);
     return $token;
 }
 
@@ -30,7 +30,7 @@ function getToken($uid) {
  * @return bool
  */
 function verifyToken($uid, $token) {
-    $where=['token'=>$token,'uid'=>$uid];
+    $where = ['token' => $token, 'uid' => $uid];
     $tokenMsg = DB('token')->select($where)->fetch();
     if (!$tokenMsg) {
         return false;
@@ -38,7 +38,7 @@ function verifyToken($uid, $token) {
         DB('token')->delete($where);
         return false;
     }
-    DB('token')->update(['time'=>time()],$where);
+    DB('token')->update(['time' => time()], $where);
     return true;
 }
 
@@ -50,25 +50,21 @@ function verifyToken($uid, $token) {
 function getIP() {
     if (getenv('HTTP_CLIENT_IP')) {
         $ip = getenv('HTTP_CLIENT_IP');
-    }
-    elseif (getenv('HTTP_X_FORWARDED_FOR')) {
+    } elseif (getenv('HTTP_X_FORWARDED_FOR')) {
         $ip = getenv('HTTP_X_FORWARDED_FOR');
-    }
-    elseif (getenv('HTTP_X_FORWARDED')) {
+    } elseif (getenv('HTTP_X_FORWARDED')) {
         $ip = getenv('HTTP_X_FORWARDED');
-    }
-    elseif (getenv('HTTP_FORWARDED_FOR')) {
+    } elseif (getenv('HTTP_FORWARDED_FOR')) {
         $ip = getenv('HTTP_FORWARDED_FOR');
 
-    }
-    elseif (getenv('HTTP_FORWARDED')) {
+    } elseif (getenv('HTTP_FORWARDED')) {
         $ip = getenv('HTTP_FORWARDED');
-    }
-    else {
+    } else {
         $ip = $_SERVER['REMOTE_ADDR'];
     }
     return $ip;
 }
+
 /**
  * 取随机字符串
  * @author Farmer
@@ -76,7 +72,7 @@ function getIP() {
  * @param $type
  * @return string
  */
-function getRandString($length, $type) {
+function getRandString($length, $type=2) {
     $randString = '1234567890qwwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHHJKLZXCVBNM';
     $retStr = '';
     for ($n = 0; $n < $length; $n++) {
@@ -92,7 +88,7 @@ function getRandString($length, $type) {
  * @return bool|mixed
  */
 function getUser($user) {
-    if ($userMsg = DB('user')->find(['user' => $user,'email'=>[$user,'or']])) {
+    if ($userMsg = DB('user')->find(['user' => $user, 'email' => [$user, 'or']])) {
         return $userMsg;
     }
     return false;
@@ -105,10 +101,74 @@ function getUser($user) {
  * @param string $value
  * @return int
  */
-function config($key,$value=''){
-    if(empty($value)){
-        return DB('config')->update(['value'=>$value],['key'=>$key]);
-    }else{
-        return DB('config')->select(['key'=>$key])->fetch()['value'];
+function config($key, $value = '') {
+    if (empty($value)) {
+        return DB('config')->update(['value' => $value], ['key' => $key]);
+    } else {
+        return DB('config')->select(['key' => $key])->fetch()['value'];
     }
 }
+
+
+/**
+ * 通过uid获取用户信息
+ * @author Farmer
+ * @param $uid
+ * @return mixed
+ */
+function uidUser($uid) {
+    return DB('user')->find(['uid' => $uid]);
+}
+
+/**
+ * 获取用户组信息
+ * @author Farmer
+ * @param $uid
+ * @return array
+ */
+function getGroup($uid) {
+    if ($rec = DB('usergroup as a|group as b')->select(['uid' => $uid, 'a.group_id=b.group_id'])) {
+        return $rec->fetchAll();
+    }
+    return [];
+}
+
+/**
+ * 获取权限信息
+ * @author Farmer
+ * @param $group_id
+ * @return array
+ */
+function getAuth($group_id) {
+    if ($rec = DB('groupauth as a|auth as b')->select(['group_id' => $group_id, 'a.auth_id=b.auth_id'])) {
+        return $rec->fetchAll();
+    }
+    return [];
+}
+
+function isAuth($group_id) {
+    $rec = DB('groupauth as a|auth as b')->select(['group_id' => $group_id, 'a.auth_id=b.auth_id']);
+    $model = input('model');
+    $ctrl=input('ctrl');
+    $action=input('action');
+    while ($msg = $rec->fetch()) {
+        if ($count = substr_count($msg['auth_interface'], '->')) {
+            if ($count == 1) {
+                if (($model.'->'.$ctrl) == $msg['auth_interface']) {
+                    return true;
+                }
+            }else{
+                if (($model.'->'.$ctrl.'->'.$action) == $msg['auth_interface']) {
+                    return true;
+                }
+            }
+
+        } else {
+            if ($msg['auth_interface'] == $model) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+

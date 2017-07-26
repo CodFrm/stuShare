@@ -1,0 +1,42 @@
+<!-- 侧边导航栏 -->
+<div class="left-sidebar">
+    <!-- 用户信息 -->
+    <div class="tpl-sidebar-user-panel">
+        <div class="tpl-user-panel-slide-toggleable">
+            <div class="tpl-user-panel-profile-picture">
+                <img src="__HOME__/static/image/avatar.jpg" alt="">
+            </div>
+                    <span class="user-panel-logged-in-text">
+              <i class="am-icon-circle-o am-text-success tpl-user-panel-status-icon"></i>
+              {$user}
+          </span>
+            <a href="javascript:;" onclick="alert('暂未开通')" class="tpl-user-panel-action-link"> <span
+                    class="am-icon-pencil"></span> 账号设置</a>
+        </div>
+    </div>
+
+    <!-- 菜单 -->
+    <ul class="sidebar-nav">
+        <li class="sidebar-nav-link">
+            <a href="{:url('admin/index/index')}" class="{if $ctrl=='index'}active
+            {/if}">
+                <i class="am-icon-home sidebar-nav-link-logo"></i> 首页
+            </a>
+        </li>
+        <li class="sidebar-nav-link">
+            <a href="{:url('admin/movie/index')}" class="{if $ctrl=='movie'}active
+            {/if}">
+                <i class="am-icon-tv sidebar-nav-link-logo"></i> 影视管理
+            </a>
+        </li>
+        <li class="sidebar-nav-link">
+            <a href="{:url('admin/index/logout')}" class="{if $action=='logout'}active
+            {/if}">
+                <i class="am-icon-sign-out sidebar-nav-link-logo"></i> 退出
+            </a>
+        </li>
+    </ul>
+</div>
+
+<div id="tpl-echarts">
+</div>

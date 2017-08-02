@@ -23,5 +23,21 @@ class index extends auth {
         setcookie('token', '', 0, '/');
         header('Location: ' . url('index/login/login'));
     }
+    public function setting(){
+        V()->assign('title','设置页面');
+        $setting['update_v']=config('update_v');
+        $setting['update_u']=config('update_u');
+        V()->assign('setting',$setting);
+        V()->display();
+    }
+    public function u_setting(){
+        if(input('post.update_u')){
+            config('update_u',input('post.update_u'));
+        }
+        if(input('post.update_v')){
+            config('update_v',input('post.update_v'));
+        }
+        return json(['code'=>1,'msg'=>'修改成功']);
+    }
 
 }

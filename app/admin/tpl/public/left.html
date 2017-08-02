@@ -18,7 +18,7 @@
     <!-- 菜单 -->
     <ul class="sidebar-nav">
         <li class="sidebar-nav-link">
-            <a href="{:url('admin/index/index')}" class="{if $ctrl=='index'}active
+            <a href="{:url('admin/index/index')}" class="{if $ctrl=='index' and $action=='index'}active
             {/if}">
                 <i class="am-icon-home sidebar-nav-link-logo"></i> 首页
             </a>
@@ -27,6 +27,12 @@
             <a href="{:url('admin/movie/index')}" class="{if $ctrl=='movie'}active
             {/if}">
                 <i class="am-icon-tv sidebar-nav-link-logo"></i> 影视管理
+            </a>
+        </li>
+        <li class="sidebar-nav-link">
+            <a href="{:url('admin/index/setting')}" class="{if $action=='setting'}active
+            {/if}">
+                <i class="am-icon-cog sidebar-nav-link-logo"></i> 系统设置
             </a>
         </li>
         <li class="sidebar-nav-link">

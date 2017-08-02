@@ -22,7 +22,7 @@
                             <small>影视的名称</small>
                         </div>
                     </div>
-                    {if $video['father_vid']!==-1}
+                    {if $video['father_vid']!=-1}
                     <input type="hidden" value="{$fvid}" id="fvid">
                     <div class="am-form-group">
                         <label class="am-u-sm-3 am-form-label">集数</label>
@@ -107,7 +107,7 @@
                         <label class="am-u-sm-3 am-form-label">发布</label>
                         <div class="am-u-sm-9">
                             <div class="tpl-switch">
-                                <input type="checkbox" id="status" class="ios-switch bigswitch tpl-switch-btn" {if $video['status']!==0}checked=""{/if}>
+                                <input type="checkbox" id="status" class="ios-switch bigswitch tpl-switch-btn" {if $video['status']!=0}checked=""{/if}>
                                 <div class="tpl-switch-btn-view">
                                     <div>
                                     </div>
@@ -168,7 +168,6 @@
                                 <!-- more data -->
                                 </tbody>
                             </table>
-
                         </div>
                     </div>
                     {/if}
@@ -196,7 +195,7 @@
         var release_time = $('#release_time').val();
         var mark = $('#mark').val();
         var introduction = $('#introduction').val();
-        {if $video['father_vid']!==-1}
+        {if $video['father_vid']!=-1}
         var status = $('#status').val();
         {else}
         var status = $('#status').is(':checked');

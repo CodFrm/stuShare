@@ -4,188 +4,39 @@ Navicat MySQL Data Transfer
 Source Server         : localhost_3306
 Source Server Version : 50505
 Source Host           : localhost:3306
-Source Database       : test
+Source Database       : stushare
 
 Target Server Type    : MYSQL
 Target Server Version : 50505
 File Encoding         : 65001
 
-Date: 2017-07-26 14:06:18
+Date: 2017-08-02 10:53:06
 */
 
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for nas
+-- Table structure for share_accounting
 -- ----------------------------
-DROP TABLE IF EXISTS `nas`;
-CREATE TABLE `nas` (
-  `id` int(10) NOT NULL,
-  `nasname` varchar(128) NOT NULL,
-  `shortname` varchar(32) DEFAULT NULL,
-  `type` varchar(30) DEFAULT 'other',
-  `ports` int(5) DEFAULT NULL,
-  `secret` varchar(60) NOT NULL DEFAULT 'secret',
-  `server` varchar(64) DEFAULT NULL,
-  `community` varchar(50) DEFAULT NULL,
-  `description` varchar(200) DEFAULT 'RADIUS Client'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+DROP TABLE IF EXISTS `share_accounting`;
+CREATE TABLE `share_accounting` (
+  `aid` int(11) NOT NULL AUTO_INCREMENT COMMENT '计费id',
+  `uid` int(11) NOT NULL,
+  `login_time` int(11) NOT NULL,
+  `logout_time` int(11) DEFAULT '-1',
+  `nas_ip` varchar(255) NOT NULL,
+  `allot_ip` varchar(255) NOT NULL,
+  `session_id` varchar(255) NOT NULL,
+  PRIMARY KEY (`aid`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
--- Records of nas
+-- Records of share_accounting
 -- ----------------------------
-
--- ----------------------------
--- Table structure for radacct
--- ----------------------------
-DROP TABLE IF EXISTS `radacct`;
-CREATE TABLE `radacct` (
-  `radacctid` bigint(21) NOT NULL AUTO_INCREMENT,
-  `acctsessionid` varchar(64) NOT NULL DEFAULT '',
-  `acctuniqueid` varchar(32) NOT NULL DEFAULT '',
-  `username` varchar(64) NOT NULL DEFAULT '',
-  `groupname` varchar(64) NOT NULL DEFAULT '',
-  `realm` varchar(64) DEFAULT '',
-  `nasipaddress` varchar(15) NOT NULL DEFAULT '',
-  `nasportid` varchar(15) DEFAULT NULL,
-  `nasporttype` varchar(32) DEFAULT NULL,
-  `acctstarttime` datetime DEFAULT NULL,
-  `acctupdatetime` datetime DEFAULT NULL,
-  `acctstoptime` datetime DEFAULT NULL,
-  `acctinterval` int(12) DEFAULT NULL,
-  `acctsessiontime` int(12) unsigned DEFAULT NULL,
-  `acctauthentic` varchar(32) DEFAULT NULL,
-  `connectinfo_start` varchar(50) DEFAULT NULL,
-  `connectinfo_stop` varchar(50) DEFAULT NULL,
-  `acctinputoctets` bigint(20) DEFAULT NULL,
-  `acctoutputoctets` bigint(20) DEFAULT NULL,
-  `calledstationid` varchar(50) NOT NULL DEFAULT '',
-  `callingstationid` varchar(50) NOT NULL DEFAULT '',
-  `acctterminatecause` varchar(32) NOT NULL DEFAULT '',
-  `servicetype` varchar(32) DEFAULT NULL,
-  `framedprotocol` varchar(32) DEFAULT NULL,
-  `framedipaddress` varchar(15) NOT NULL DEFAULT '',
-  PRIMARY KEY (`radacctid`),
-  UNIQUE KEY `acctuniqueid` (`acctuniqueid`),
-  KEY `username` (`username`),
-  KEY `framedipaddress` (`framedipaddress`),
-  KEY `acctsessionid` (`acctsessionid`),
-  KEY `acctsessiontime` (`acctsessiontime`),
-  KEY `acctstarttime` (`acctstarttime`),
-  KEY `acctinterval` (`acctinterval`),
-  KEY `acctstoptime` (`acctstoptime`),
-  KEY `nasipaddress` (`nasipaddress`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- ----------------------------
--- Records of radacct
--- ----------------------------
-
--- ----------------------------
--- Table structure for radcheck
--- ----------------------------
-DROP TABLE IF EXISTS `radcheck`;
-CREATE TABLE `radcheck` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(64) NOT NULL DEFAULT '',
-  `attribute` varchar(64) NOT NULL DEFAULT '',
-  `op` char(2) NOT NULL DEFAULT '==',
-  `value` varchar(253) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `username` (`username`(32))
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
-
--- ----------------------------
--- Records of radcheck
--- ----------------------------
-INSERT INTO `radcheck` VALUES ('11', 'Farmer', 'Cleartext-Password', '=', 'zouqin123');
-
--- ----------------------------
--- Table structure for radgroupcheck
--- ----------------------------
-DROP TABLE IF EXISTS `radgroupcheck`;
-CREATE TABLE `radgroupcheck` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `groupname` varchar(64) NOT NULL DEFAULT '',
-  `attribute` varchar(64) NOT NULL DEFAULT '',
-  `op` char(2) NOT NULL DEFAULT '==',
-  `value` varchar(253) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `groupname` (`groupname`(32))
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- ----------------------------
--- Records of radgroupcheck
--- ----------------------------
-
--- ----------------------------
--- Table structure for radgroupreply
--- ----------------------------
-DROP TABLE IF EXISTS `radgroupreply`;
-CREATE TABLE `radgroupreply` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `groupname` varchar(64) NOT NULL DEFAULT '',
-  `attribute` varchar(64) NOT NULL DEFAULT '',
-  `op` char(2) NOT NULL DEFAULT '=',
-  `value` varchar(253) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `groupname` (`groupname`(32))
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- ----------------------------
--- Records of radgroupreply
--- ----------------------------
-
--- ----------------------------
--- Table structure for radpostauth
--- ----------------------------
-DROP TABLE IF EXISTS `radpostauth`;
-CREATE TABLE `radpostauth` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(64) NOT NULL DEFAULT '',
-  `pass` varchar(64) NOT NULL DEFAULT '',
-  `reply` varchar(32) NOT NULL DEFAULT '',
-  `authdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- ----------------------------
--- Records of radpostauth
--- ----------------------------
-
--- ----------------------------
--- Table structure for radreply
--- ----------------------------
-DROP TABLE IF EXISTS `radreply`;
-CREATE TABLE `radreply` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(64) NOT NULL DEFAULT '',
-  `attribute` varchar(64) NOT NULL DEFAULT '',
-  `op` char(2) NOT NULL DEFAULT '=',
-  `value` varchar(253) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `username` (`username`(32))
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- ----------------------------
--- Records of radreply
--- ----------------------------
-
--- ----------------------------
--- Table structure for radusergroup
--- ----------------------------
-DROP TABLE IF EXISTS `radusergroup`;
-CREATE TABLE `radusergroup` (
-  `username` varchar(64) NOT NULL DEFAULT '',
-  `groupname` varchar(64) NOT NULL DEFAULT '',
-  `priority` int(11) NOT NULL DEFAULT '1',
-  KEY `username` (`username`(32))
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- ----------------------------
--- Records of radusergroup
--- ----------------------------
-INSERT INTO `radusergroup` VALUES ('Farmer', 'VIP0', '1');
+INSERT INTO `share_accounting` VALUES ('3', '1', '1501560930', '1501641570', '192.168.1.13', '10.8.0.6', 'BA98B0D09B708E53ECA868034E64174D');
+INSERT INTO `share_accounting` VALUES ('4', '1', '1501560934', '123', '192.168.1.13', '10.8.0.6', 'BA98B0D09B708E53ECA868034E64174D');
+INSERT INTO `share_accounting` VALUES ('5', '1', '1501641963', '1501642085', '192.168.1.13', '10.8.0.6', '31D020C56C48335129AC689D4097066D');
+INSERT INTO `share_accounting` VALUES ('6', '1', '1501642094', '1501642106', '192.168.1.13', '10.8.0.6', '7D36B41661B907B175151011C7A20A38');
 
 -- ----------------------------
 -- Table structure for share_auth
@@ -196,7 +47,7 @@ CREATE TABLE `share_auth` (
   `auth_interface` varchar(255) NOT NULL,
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`auth_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of share_auth
@@ -206,6 +57,7 @@ INSERT INTO `share_auth` VALUES ('2', 'user->money', null);
 INSERT INTO `share_auth` VALUES ('3', 'user->api->online', null);
 INSERT INTO `share_auth` VALUES ('4', 'user->movie->post', null);
 INSERT INTO `share_auth` VALUES ('5', 'admin', null);
+INSERT INTO `share_auth` VALUES ('6', 'radius', '允许用户通过认证');
 
 -- ----------------------------
 -- Table structure for share_config
@@ -220,6 +72,8 @@ CREATE TABLE `share_config` (
 -- ----------------------------
 -- Records of share_config
 -- ----------------------------
+INSERT INTO `share_config` VALUES ('update_u', 'www.baidu.com');
+INSERT INTO `share_config` VALUES ('update_v', '1');
 
 -- ----------------------------
 -- Table structure for share_group
@@ -248,8 +102,8 @@ CREATE TABLE `share_groupauth` (
   `auth_id` int(11) NOT NULL,
   KEY `auth_id` (`auth_id`),
   KEY `group_id` (`group_id`),
-  CONSTRAINT `share_groupauth_ibfk_1` FOREIGN KEY (`auth_id`) REFERENCES `share_auth` (`auth_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `share_groupauth_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `share_group` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `auth_id` FOREIGN KEY (`auth_id`) REFERENCES `share_auth` (`auth_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `group_id` FOREIGN KEY (`group_id`) REFERENCES `share_group` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -267,6 +121,8 @@ INSERT INTO `share_groupauth` VALUES ('4', '1');
 INSERT INTO `share_groupauth` VALUES ('4', '2');
 INSERT INTO `share_groupauth` VALUES ('4', '3');
 INSERT INTO `share_groupauth` VALUES ('4', '4');
+INSERT INTO `share_groupauth` VALUES ('4', '6');
+INSERT INTO `share_groupauth` VALUES ('2', '6');
 
 -- ----------------------------
 -- Table structure for share_inv_code
@@ -298,7 +154,7 @@ CREATE TABLE `share_log` (
   `log_req` text NOT NULL,
   PRIMARY KEY (`log_id`),
   KEY `log_uid` (`log_uid`),
-  CONSTRAINT `share_log_ibfk_1` FOREIGN KEY (`log_uid`) REFERENCES `share_user` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `log_uid` FOREIGN KEY (`log_uid`) REFERENCES `share_user` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -330,21 +186,22 @@ CREATE TABLE `share_token` (
   `token` varchar(255) NOT NULL,
   `time` int(11) NOT NULL,
   KEY `token_uid` (`uid`),
-  CONSTRAINT `share_token_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `share_user` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `token_uid` FOREIGN KEY (`uid`) REFERENCES `share_user` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of share_token
 -- ----------------------------
-INSERT INTO `share_token` VALUES ('1', 'PWtjgkm01500955569', '1500955773');
-INSERT INTO `share_token` VALUES ('1', 'ks3pD4Km1500955776', '1500962631');
 INSERT INTO `share_token` VALUES ('1', 'T3AGcaGy1500988808', '1500988953');
 INSERT INTO `share_token` VALUES ('1', 'AnwyvZED1500993702', '1500993704');
 INSERT INTO `share_token` VALUES ('1', 'pGs0fvXb1500994207', '1500994208');
 INSERT INTO `share_token` VALUES ('1', 'Yi8Utw1W1501034516', '1501036644');
 INSERT INTO `share_token` VALUES ('1', 'mZ3zYbs41501036773', '1501046542');
 INSERT INTO `share_token` VALUES ('1', 'AUkmLQK71501046544', '1501048596');
-INSERT INTO `share_token` VALUES ('1', 'SfYFmPci1501048892', '1501048908');
+INSERT INTO `share_token` VALUES ('1', 'SfYFmPci1501048892', '1501050530');
+INSERT INTO `share_token` VALUES ('1', 'E8ZHpU151501573556', '1501573590');
+INSERT INTO `share_token` VALUES ('1', 'zPzXzInF1501576048', '1501576452');
+INSERT INTO `share_token` VALUES ('1', 'wbDdHIoS1501578743', '1501579431');
 
 -- ----------------------------
 -- Table structure for share_user
@@ -363,8 +220,8 @@ CREATE TABLE `share_user` (
 -- ----------------------------
 -- Records of share_user
 -- ----------------------------
-INSERT INTO `share_user` VALUES ('1', 'Farmer', 'zouqin123', 'code.farmer@qq.com', '1500692842', '0.00');
-INSERT INTO `share_user` VALUES ('2', 'admin', '123456789', '675071772@qq.com', '1500994558', '0.00');
+INSERT INTO `share_user` VALUES ('1', 'Farmer', 'qwe123', 'code.farmer@qq.com', '1500692842', '0.00');
+INSERT INTO `share_user` VALUES ('2', 'admin', '123456789', 'test@qq.com', '1500994558', '0.00');
 
 -- ----------------------------
 -- Table structure for share_usergroup
@@ -376,8 +233,8 @@ CREATE TABLE `share_usergroup` (
   `expire_time` int(11) NOT NULL DEFAULT '-1' COMMENT '用户组到期时间 永久为-1',
   KEY `uid` (`uid`),
   KEY `user_group_id` (`group_id`),
-  CONSTRAINT `share_usergroup_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `share_user` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `share_usergroup_ibfk_2` FOREIGN KEY (`group_id`) REFERENCES `share_group` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `uid` FOREIGN KEY (`uid`) REFERENCES `share_user` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `user_group_id` FOREIGN KEY (`group_id`) REFERENCES `share_group` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------

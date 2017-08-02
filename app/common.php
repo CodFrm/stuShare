@@ -102,10 +102,10 @@ function getUser($user) {
  * @return int
  */
 function config($key, $value = '') {
-    if (empty($value)) {
-        return DB('config')->update(['value' => $value], ['key' => $key]);
+    if (!empty($value)) {
+        return DB('config')->update(['value' => $value], ['`key`' => $key]);
     } else {
-        return DB('config')->select(['key' => $key])->fetch()['value'];
+        return DB('config')->find(['`key`' => $key])['value'];
     }
 }
 

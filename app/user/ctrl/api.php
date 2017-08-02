@@ -13,7 +13,7 @@ namespace app\user\ctrl;
 
 use app\common\ctrl\auth;
 
-class api extends auth {
+class api {
     /**
      * 获取在线用户
      * @author Farmer
@@ -32,5 +32,15 @@ class api extends auth {
             $rows[] = $tmp;
         }
         return json(['code' => 0, 'count' => $count, 'rows' => $rows]);
+    }
+
+    /**
+     * 软件更新信息获取
+     * @author Farmer
+     */
+    public function update(){
+        $ret['v']=config('update_v');
+        $ret['u']=config('update_u');
+        return json($ret);
     }
 }

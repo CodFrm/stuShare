@@ -1,7 +1,10 @@
 # stuShare
 [校园网分享计划](https://github.com/CodFrm/stuShare)
 
-# 搭建openVPN+FreeRADIUS认证
+
+# 搭建openVPN+STURadius认证
+
+STURadius 为本项目定制radius(233)
 
 ## 配置openVPN
 ### 安装openVPN
@@ -52,10 +55,12 @@ cd /etc/openvpn/easy-rsa/easyrsa3/
 cp /usr/share/doc/openvpn-2.3.14/sample/sample-config-files/server.conf /etc/openvpn
 ```
 
-### 安装配置FreeRADIUS
-```
-yum install freeradius freeradius-mysql -y
+### 配置STURadius
+认证程序在radius文件夹中
 
+main.py 修改mysql配置
+```
+配置openvpn的radius插件
 wget http://www.nongnu.org/radiusplugin/radiusplugin_v2.1a_beta1.tar.gz
 
 tar xf radiusplugin_v2.1a_beta1.tar.gz 
@@ -74,7 +79,6 @@ cp radiusplugin.cnf /etc/openvpn/
 
 `配置radius文件`
 
-
 `导入数据库文件`
 
 `开启nat转发和iptables配置`
@@ -91,6 +95,13 @@ iptables -F
 iptables -X
 ```
 
+## 将本项目克隆至本地
+
 git clone https://github.com/CodFrm/stuShare.git
 
-`进行安装,然后就完成啦`
+在 icf/config.php 中修改配置
+
+### 微信支付监控
+python 启动 stuShare中的wspay.py文件,还需配置回调url
+
+进行安装,然后就完成啦

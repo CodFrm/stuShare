@@ -24,6 +24,18 @@
             </a>
         </li>
         <li class="sidebar-nav-link">
+            <a href="{:url('admin/user/index')}" class="{if $ctrl=='user'}active
+            {/if}">
+                <i class="am-icon-user sidebar-nav-link-logo"></i> 用户管理
+            </a>
+        </li>
+        <li class="sidebar-nav-link">
+            <a href="{:url('admin/server/index')}" class="{if $ctrl=='server'}active
+            {/if}">
+                <i class="am-icon-desktop sidebar-nav-link-logo"></i> 服务器管理
+            </a>
+        </li>
+        <li class="sidebar-nav-link">
             <a href="{:url('admin/movie/index')}" class="{if $ctrl=='movie'}active
             {/if}">
                 <i class="am-icon-tv sidebar-nav-link-logo"></i> 影视管理

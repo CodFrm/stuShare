@@ -26,7 +26,7 @@ namespace openvpn_stushare
         private void startOpenVpn()
         {
             Process process = new Process();
-            process.StartInfo.FileName = "openvpn.exe";
+            process.StartInfo.FileName = "bin/openvpn.exe";
             process.StartInfo.Arguments = "--config user.ovpn";
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;

@@ -4,7 +4,7 @@
     <div class="row-content am-cf">
         <div class="widget am-cf">
             <div class="widget-head am-cf">
-                <div class="widget-title am-fl">影视编辑</div>
+                <div class="widget-title am-fl">桌面客户端更新设置</div>
                 <div class="widget-function am-fr">
                     <a href="javascript:;" class="am-icon-cog"></a>
                 </div>
@@ -16,16 +16,53 @@
                         <label class="am-u-sm-3 am-form-label">版本号 <span
                                 class="tpl-form-line-small-title">Version</span></label>
                         <div class="am-u-sm-9">
-                            <input type="text" class="tpl-form-input" id="update_v"
-                                   value="{$setting['update_v']}">
+                            <input type="text" class="tpl-form-input" id="pc_update_v"
+                                   value="{$setting['pc_update_v']}">
                         </div>
                     </div>
                     <div class="am-form-group">
                         <label class="am-u-sm-3 am-form-label">更新包 <span
                                 class="tpl-form-line-small-title">Url</span></label>
                         <div class="am-u-sm-9">
-                            <input type="text" class="tpl-form-input" id="update_u"
-                                   value="{$setting['update_u']}">
+                            <input type="text" class="tpl-form-input" id="pc_update_u"
+                                   value="{$setting['pc_update_u']}">
+                        </div>
+                    </div>
+
+                    <div class="am-form-group">
+                        <div class="am-u-sm-9 am-u-sm-push-3">
+                            <button type="button" class="am-btn am-btn-primary tpl-btn-bg-color-success "
+                                    onclick="post(this)">提交
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="widget am-cf">
+            <div class="widget-head am-cf">
+                <div class="widget-title am-fl">影视App客户端更新设置</div>
+                <div class="widget-function am-fr">
+                    <a href="javascript:;" class="am-icon-cog"></a>
+                </div>
+            </div>
+            <div class="widget-body am-fr">
+
+                <form class="am-form tpl-form-line-form">
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3 am-form-label">版本号 <span
+                                class="tpl-form-line-small-title">Version</span></label>
+                        <div class="am-u-sm-9">
+                            <input type="text" class="tpl-form-input" id="movie_app_update_v"
+                                   value="{$setting['movie_app_update_v']}">
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3 am-form-label">更新包 <span
+                                class="tpl-form-line-small-title">Url</span></label>
+                        <div class="am-u-sm-9">
+                            <input type="text" class="tpl-form-input" id="movie_app_update_u"
+                                   value="{$setting['movie_app_update_u']}">
                         </div>
                     </div>
 
@@ -44,13 +81,18 @@
 {include 'public/footer'}
 <script>
     function post() {
-        var update_v = $('#update_v').val();
-        var update_u = $('#update_u').val();
+        var movie_app_update_v = $('#movie_app_update_v').val();
+        var movie_app_update_u = $('#movie_app_update_u').val();
+        var pc_update_v = $('#pc_update_v').val();
+        var pc_update_u = $('#pc_update_u').val();
         $.ajax({
             url: "{:url('admin/index/u_setting')}",
             type: "post",
             data: {
-                update_v: update_v, update_u: update_u
+                movie_app_update_v: movie_app_update_v,
+                movie_app_update_u: movie_app_update_u,
+                pc_update_v: pc_update_v,
+                pc_update_u: pc_update_u
             },
             success: function (obj) {
                 alert(obj['msg']);

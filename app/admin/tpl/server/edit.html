@@ -1,0 +1,74 @@
+{include 'public/header'}
+<!-- 内容区域 -->
+<div class="tpl-content-wrapper">
+    <div class="row-content am-cf">
+        <div class="widget am-cf">
+            <div class="widget-head am-cf">
+                <div class="widget-title am-fl">服务器编辑</div>
+                <div class="widget-function am-fr">
+                    <a href="javascript:;" class="am-icon-cog"></a>
+                </div>
+            </div>
+            <div class="widget-body am-fr">
+
+                <form class="am-form tpl-form-line-form">
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3 am-form-label">主机名 <span
+                                class="tpl-form-line-small-title">Name</span></label>
+                        <div class="am-u-sm-9">
+                            <input type="text" class="tpl-form-input" id="name"
+                                   value="{$smsg['name']}">
+                            <input type="hidden" value="{$smsg['svid']}" id="svid">
+                            <small>服务器的名称</small>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3 am-form-label">IP <span
+                                class="tpl-form-line-small-title">Ip</span></label>
+                        <div class="am-u-sm-9">
+                            <input type="text" class="tpl-form-input" id="ip"
+                                   value="{$smsg['ip']}">
+                            <small>服务器ip</small>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3 am-form-label">配置</label>
+                        <div class="am-u-sm-9">
+                            <textarea class="" rows="10" id="config"
+                                      placeholder="请输入服务器的配置文件">{$smsg['config']}</textarea>
+                        </div>
+                    </div>
+                    <div class="am-form-group">
+                        <div class="am-u-sm-9 am-u-sm-push-3">
+                            <button type="button" class="am-btn am-btn-primary tpl-btn-bg-color-success "
+                                    onclick="post(this)">提交
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include 'public/footer'}
+<script>
+    function post() {
+        var name = $('#name').val();
+        var ip = $('#ip').val();
+        var config = $('#config').val();
+        var svid = $('#svid').val();
+        $.ajax({
+            url: "{:url('admin/server/post')}?svid=" + svid,
+            type: "post",
+            data: {
+                name: name, ip: ip, config: config
+            },
+            success: function (obj) {
+                alert(obj['msg']);
+                if (obj['code'] == 1) {
+                    window.location = "{:url('admin/server/index')}";
+                }
+            }
+        });
+    }
+</script>

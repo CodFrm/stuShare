@@ -133,7 +133,7 @@ class STRadius():
                         'user as a JOIN ' + DB_PREFIX + 'usergroup AS b ON a.uid = b.uid' +
                         ' JOIN ' + DB_PREFIX + 'groupauth AS c ON c.group_id = b.group_id' +
                         ' JOIN ' + DB_PREFIX + 'auth AS d ON d.auth_id = c.auth_id' +
-                        ' where `user`=%s', user)
+                        ' where `user`=%s or `email`=%s', [user,user])
         for row in results:
             if row[12] == 'radius' and (row[8] == -1 or row[8] > time.time()):
                 if row != None:

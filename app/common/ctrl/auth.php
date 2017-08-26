@@ -50,8 +50,8 @@ class auth {
      */
     public function wlog($uid,$log,$type=0){
         $req='get:'.implodes(',',$_GET);
-        $req.='post:'.implodes(',',$_POST);
-        $req.='ip:'.getIP();
+        $req.=' post:'.implodes(',',$_POST);
+        $req.=' ip:'.getIP();
         DB('log')->insert(array('log'=>$log,'log_req'=>$req,'log_uid'=>$uid,'log_time'=>time(),'log_type'=>$type));
     }
 }

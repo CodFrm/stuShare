@@ -15,7 +15,7 @@
         </div>
         <div class="menu">
             <a id="kt" class="menu-item">确定开通</a>
-            <a href="{:url('admin/index/index')}" class="menu-item">返回首页</a>
+            <a href="{:url('user/index/index')}" class="menu-item">返回首页</a>
         </div>
     </div>
 </div>
@@ -27,13 +27,13 @@
         $('#kt').click(function () {
             var month = $('#month').val();
             $.ajax({
-                url: "{:url('admin/money/vip')}",
+                url: "{:url('user/money/vip')}",
                 type: 'POST',
                 data: {month:month},
                 success: function (json) {
                     alert(json['msg']);
                     if (json['code'] == 0) {
-                        window.location="{:url('admin/index/index')}"
+                        window.location="{:url('user/index/index')}"
                     }
                 }
             });

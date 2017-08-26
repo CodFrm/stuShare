@@ -26,7 +26,7 @@ class movie extends auth {
         $retJson=[];
         $rec=DB('video')->select(['status'=>'1','father_vid'=>-1,'__limit'=>(($page-1)*20).',20'],'count(*)');
         $count=$rec->fetch();
-        $rec=DB('video')->select(['status'=>'1','father_vid'=>-1,'__order by'=>'live desc','__limit'=>(($page-1)*20).',20'],'vid,pay,name,image_url');
+        $rec=DB('video')->select(['status'=>'1','father_vid'=>-1,'__order by'=>'vid desc,live desc','__limit'=>(($page-1)*20).',20'],'vid,pay,name,image_url');
         $retJson=['code'=>0,'msg'=>'success'];
         $retJson['page_all']=ceil($count['count(*)']/20);
         while ($tmp=$rec->fetch()){

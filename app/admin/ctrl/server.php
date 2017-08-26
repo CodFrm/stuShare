@@ -15,6 +15,7 @@ use app\common\ctrl\auth;
 
 class server extends auth {
     public function index() {
+        V()->assign('title','服务器管理');
         $data = DB('server')->select()->fetchAll();
         V()->assign('server_list', $data);
         V()->display();

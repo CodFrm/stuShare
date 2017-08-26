@@ -5,18 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:openvpn_stushare"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="705.926">
+        WindowStartupLocation="CenterScreen"
+        Title="连接 - stuShare" Height="459.375" Width="666.747"
+        Loaded="Window_Loaded"
+        ResizeMode="CanMinimize"
+        Closing="Window_Closing"
+        StateChanged="Window_StateChanged">
     <Grid>
-        <ListView x:Name="listView" HorizontalAlignment="Left" Height="166" Margin="52,78,0,0" VerticalAlignment="Top" Width="188">
+        <ListView x:Name="listView" HorizontalAlignment="Left" Height="238" Margin="10,10,0,0" VerticalAlignment="Top" Width="626" MouseDoubleClick="listView_MouseDoubleClick">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn/>
+                    <GridViewColumn Header="服务器名" DisplayMemberBinding="{Binding serverName}" Width="300"></GridViewColumn>
+                    <GridViewColumn Header="在线人数" DisplayMemberBinding="{Binding humNumber}" Width="100"></GridViewColumn>
+                    <GridViewColumn Header="Ping(ms)" DisplayMemberBinding="{Binding ping}" Width="100"></GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
-        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="166" 
-                 Margin="258,78,0,0" TextWrapping="Wrap" Text="" 
-                 VerticalScrollBarVisibility="Visible" AcceptsReturn="True" VerticalAlignment="Top" Width="431"/>
-        <Button x:Name="start"  Margin="187,272,191.2,9.8" Click="start_Click"/>
+        <TextBox x:Name="msgBox" HorizontalAlignment="Left" Height="117" IsReadOnly="True"
+                 Margin="10,253,0,0" TextWrapping="Wrap" Text="消息提示:&#xD;&#xA;" 
+                 VerticalScrollBarVisibility="Visible" AcceptsReturn="True" VerticalAlignment="Top" Width="626"/>
+        <Button x:Name="start" Content="连接" FontSize="16"  Margin="473,375,24,9.6" Click="start_Click"/>
+        <Button x:Name="f5" Content="刷新" FontSize="16"  Margin="305,375,192,9.6" Click="f5_Click"/>
+        <Button x:Name="test" Content="测试" FontSize="16"  Margin="137,375,360,9.6" Click="test_Click"/>
     </Grid>
 </Window>

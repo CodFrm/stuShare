@@ -57,8 +57,19 @@ class api extends auth {
             $tmp['name']=$item['name'];
             $tmp['ip']=$item['ip'];
             $tmp['config']=$item['config'];
+            $tmp['count']=DB("accounting")->select(['nas_ip'=>$item['ip'],'logout_time'=>'-1'],'count(*)')->fetch()['count(*)'];
             $ret['rows'][]=$tmp;
         }
+        return json($ret);
+    }
+
+    /**
+     * 获取权限
+     * @author Farmer
+     */
+    public function getauth(){
+        $ret=['code'=>0,'msg'=>'success'];
+        $ret['rows']=$this->userMsg['group'];
         return json($ret);
     }
 }

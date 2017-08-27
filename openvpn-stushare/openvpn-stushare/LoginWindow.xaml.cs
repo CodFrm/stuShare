@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Win32;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -63,6 +64,7 @@ namespace openvpn_stushare
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Edit_User.Text = Functions.ReadIni("data","user");
+
             if (Functions.ReadIni("check","savep")=="true")
             {
                 Edit_Pwd.Password = Functions.ReadIni("data","pwd");

@@ -121,4 +121,10 @@
   <data name="vpn" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\vpn.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="vpn_success" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\vpn_success.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="vpn_wait" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\vpn_wait.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

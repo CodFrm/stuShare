@@ -69,5 +69,25 @@ namespace openvpn_stushare.Properties {
                 return ((System.Drawing.Icon)(obj));
             }
         }
+        
+        /// <summary>
+        ///   查找类似于 (图标) 的 System.Drawing.Icon 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Icon vpn_success {
+            get {
+                object obj = ResourceManager.GetObject("vpn_success", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似于 (图标) 的 System.Drawing.Icon 类型的本地化资源。
+        /// </summary>
+        internal static System.Drawing.Icon vpn_wait {
+            get {
+                object obj = ResourceManager.GetObject("vpn_wait", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
     }
 }

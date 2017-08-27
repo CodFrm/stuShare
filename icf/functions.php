@@ -46,9 +46,9 @@ function isExist($array, $mode,&$data='') {
                     return $value['regex'][1];
                 }
             }
-            if (!empty($value['function'])) {//对函数处理
-                $tmpFunction=$value['function'];
-                $funName=$value['function'][0];
+            if (!empty($value['func'])) {//对函数处理
+                $tmpFunction=$value['func'];
+                $funName=$value['func'][0];
                 $parameter=array();
                 unset($tmpFunction[0]);
                 $parameter[]=$array[$key];

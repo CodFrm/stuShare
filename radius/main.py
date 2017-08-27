@@ -149,7 +149,7 @@ class STRadius():
     @staticmethod
     def gUser(user):
         row = fetchone('select * from ' + DB_PREFIX +
-                       'user where `user`=%s', user)
+                       'user where `user`=%s or `email`=%s', [user,user])
         if row != None:
             return row
         return False

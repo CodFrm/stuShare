@@ -53,3 +53,23 @@ function isEmail($email) {
         return true;
     }
 }
+
+
+/**
+ * 验证IP
+ * @author Farmer
+ * @param $ip
+ * @return bool
+ */
+function verifyIP($ip){
+    if($ipMsg=DB('ip')->find(array('ip'=>$ip))){
+        if($ipMsg['ip_time']<(time()-config('regip'))){
+            DB('ip')->update(array('ip_time'=>time()),array('ip'=>$ip));
+            return true;
+        }else{
+            return false;
+        }
+    }
+    DB('ip')->insert(array('ip'=>$ip,'ip_time'=>time()));
+    return true;
+}

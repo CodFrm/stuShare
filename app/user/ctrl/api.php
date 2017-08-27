@@ -52,13 +52,13 @@ class api extends auth {
      */
     public function getserver() {
         $rec = DB('server')->select();
-        $ret=['code' => 0,'msg'=>'success'];
-        foreach ($rec->fetchAll() as $item){
-            $tmp['name']=$item['name'];
-            $tmp['ip']=$item['ip'];
-            $tmp['config']=$item['config'];
-            $tmp['count']=DB("accounting")->select(['nas_ip'=>$item['ip'],'logout_time'=>'-1'],'count(*)')->fetch()['count(*)'];
-            $ret['rows'][]=$tmp;
+        $ret = ['code' => 0, 'msg' => 'success'];
+        foreach ($rec->fetchAll() as $item) {
+            $tmp['name'] = $item['name'];
+            $tmp['ip'] = $item['ip'];
+            $tmp['config'] = $item['config'];
+            $tmp['count'] = DB("accounting")->select(['nas_ip' => $item['ip'], 'logout_time' => '-1'], 'count(*)')->fetch()['count(*)'];
+            $ret['rows'][] = $tmp;
         }
         return json($ret);
     }
@@ -67,9 +67,33 @@ class api extends auth {
      * 获取权限
      * @author Farmer
      */
-    public function getauth(){
-        $ret=['code'=>0,'msg'=>'success'];
-        $ret['rows']=$this->userMsg['group'];
+    public function getauth() {
+        $ret = ['code' => 0, 'msg' => 'success'];
+        $ret['rows'] = $this->userMsg['group'];
         return json($ret);
+    }
+
+    public function feedback() {
+        $ret = isExist($_POST, [
+            'call' => '请输入联系方式,不想输入就随便打吧,反正系统会记录的',
+            'msg' => '必须输入你想说的东西!'
+        ]);
+        $retJson = ['code' => -1];
+        if (isset($_POST['type'])) {
+            $type = $_POST['type'];
+        } else {
+            $type = 0;
+        }
+        $retJson['msg'] = $ret;
+        if ($ret === true) {
+            if(strlen($_POST['msg'])<20){
+                $retJson = ['code' => -1, 'msg' => '你就这么点想说的?'];
+            }else {
+                $retJson = ['code' => 0, 'msg' => '反馈成功'];
+                DB('feedback')->insert(['uid' => $_COOKIE['uid'], 'contact' => $_POST['call'],
+                    'msg' => $_POST['msg'], 'time' => time(), 'type' => $type]);
+            }
+        }
+        return json($retJson);
     }
 }

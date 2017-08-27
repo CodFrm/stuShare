@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -65,7 +66,7 @@ namespace openvpn_stushare
             return temp.ToString();
         }
         public static string URL = "http://127.0.0.1/stushare";
-        internal static string version="v0.1";
+        internal static string version = "v0.1";
         private static CookieContainer cookie = new CookieContainer();
 
         public static string User { get; internal set; }
@@ -79,27 +80,35 @@ namespace openvpn_stushare
         /// <returns></returns>
         public static string HttpGet(string Url, string postDataStr)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Url + (postDataStr == "" ? "" : "?") + postDataStr);
-            if (cookie.Count == 0)
+            try
             {
-                request.CookieContainer = new CookieContainer();
-                cookie = request.CookieContainer;
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Url + (postDataStr == "" ? "" : "?") + postDataStr);
+                if (cookie.Count == 0)
+                {
+                    request.CookieContainer = new CookieContainer();
+                    cookie = request.CookieContainer;
+                }
+                else
+                {
+                    request.CookieContainer = cookie;
+                }
+                request.Method = "GET";
+                request.ContentType = "text/html;charset=UTF-8";
+
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                Stream myResponseStream = response.GetResponseStream();
+                StreamReader myStreamReader = new StreamReader(myResponseStream, Encoding.UTF8);
+                string retString = myStreamReader.ReadToEnd();
+                myStreamReader.Close();
+                myResponseStream.Close();
+
+                return retString;
             }
-            else
+            catch (Exception)
             {
-                request.CookieContainer = cookie;
+                return "";
             }
-            request.Method = "GET";
-            request.ContentType = "text/html;charset=UTF-8";
-
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            Stream myResponseStream = response.GetResponseStream();
-            StreamReader myStreamReader = new StreamReader(myResponseStream, Encoding.UTF8);
-            string retString = myStreamReader.ReadToEnd();
-            myStreamReader.Close();
-            myResponseStream.Close();
-
-            return retString;
+          
         }
         /// <summary>
         /// Http发送Post请求方法
@@ -109,31 +118,40 @@ namespace openvpn_stushare
         /// <returns></returns>
         public static string HttpPost(string Url, string postDataStr)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Url);
-            if (cookie.Count == 0)
+            try
             {
-                request.CookieContainer = new CookieContainer();
-                cookie = request.CookieContainer;
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(Url);
+                if (cookie.Count == 0)
+                {
+                    request.CookieContainer = new CookieContainer();
+                    cookie = request.CookieContainer;
+                }
+                else
+                {
+                    request.CookieContainer = cookie;
+                }
+                request.Method = "POST";
+                request.ContentType = "application/x-www-form-urlencoded";
+                request.ContentLength = postDataStr.Length;
+                StreamWriter writer = new StreamWriter(request.GetRequestStream(), Encoding.ASCII);
+                writer.Write(postDataStr);
+                writer.Flush();
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                string encoding = response.ContentEncoding;
+                if (encoding == null || encoding.Length < 1)
+                {
+                    encoding = "UTF-8"; //默认编码 
+                }
+                StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding(encoding));
+                string retString = reader.ReadToEnd();
+                return retString;
             }
-            else
+            catch (Exception)
             {
-                request.CookieContainer = cookie;
+
+                return "";
             }
-            request.Method = "POST";
-            request.ContentType = "application/x-www-form-urlencoded";
-            request.ContentLength = postDataStr.Length;
-            StreamWriter writer = new StreamWriter(request.GetRequestStream(), Encoding.ASCII);
-            writer.Write(postDataStr);
-            writer.Flush();
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            string encoding = response.ContentEncoding;
-            if (encoding == null || encoding.Length < 1)
-            {
-                encoding = "UTF-8"; //默认编码 
-            }
-            StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.GetEncoding(encoding));
-            string retString = reader.ReadToEnd();
-            return retString;
+           
         }
 
         /// <summary>
@@ -141,7 +159,7 @@ namespace openvpn_stushare
         /// </summary>
         /// <param name="path"></param>
         /// <param name="content"></param>
-        public static void WriteFile(string path,string content)
+        public static void WriteFile(string path, string content)
         {
             FileStream fs = new FileStream(path, FileMode.Create);
             //获得字节数组
@@ -160,6 +178,29 @@ namespace openvpn_stushare
         public static void DeleteFile(string path)
         {
             File.Delete(path);
+        }
+
+        public static void RunExe(string path, string parame = "")
+        {
+            try
+            {
+                Process process = new Process();
+                process.StartInfo.FileName = path;
+                process.StartInfo.Arguments = parame;
+                process.StartInfo.Verb = "runas";
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardInput = true;
+                process.StartInfo.CreateNoWindow = true;
+                process.Start();
+                process.WaitForExit();
+                process.Close();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+           
         }
     }
 }

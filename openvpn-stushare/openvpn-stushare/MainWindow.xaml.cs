@@ -1,7 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Win32;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Net;
 using System.Net.NetworkInformation;
 using System.Resources;
 using System.Text;
@@ -40,6 +43,16 @@ namespace openvpn_stushare
         {
             notifyIcon.Dispose();
             System.Windows.Application.Current.Shutdown();
+            try
+            {
+                openVpn.Kill();
+                openVpn.Close();
+            }
+            catch (Exception)
+            {
+
+            }
+            System.Environment.Exit(0);
         }
         private NotifyIcon notifyIcon;
 
@@ -164,59 +177,163 @@ namespace openvpn_stushare
             thread.Start();
         }
 
-        private void test_Click(object sender, RoutedEventArgs e)
-        {
-            serverData s = (serverData)listView.Items.GetItemAt(0);
-
-        }
-
         private void listView_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             start_Click(sender, e);
         }
         private string mConfig;
+        private bool mIsRun = false;
+        private Process openVpn;
+        private bool mIsSuccess = false;
         private void startOpenVpn()
         {
-            Functions.WriteFile("tmp.ovpn", mConfig);
-            Process process = new Process();
-            process.StartInfo.FileName = "bin/openvpn.exe";
-            process.StartInfo.Arguments = "--config tmp.ovpn";
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.RedirectStandardOutput = true;
-            process.StartInfo.RedirectStandardInput = true;
-            process.StartInfo.CreateNoWindow = true;
-            process.OutputDataReceived += new DataReceivedEventHandler(process_OutputDataReceived);
-            process.Start();
-            process.BeginOutputReadLine();
-            Thread.Sleep(1000);
-            process.StandardInput.WriteLine(Functions.User);
-            Thread.Sleep(500);
-            process.StandardInput.WriteLine(Functions.Pwd);
-            process.WaitForExit();
-            process.Close();
-            Functions.DeleteFile("tmp.ovpn");
+            if (mIsRun)
+            {
+                addMsg("正在呢");
+                return;
+            }
+            mIsRun = true;
+            mIsSuccess = false;
+            try
+            {
+                setState("vpn_wait");
+
+                Functions.WriteFile("tmp.ovpn", mConfig);
+                openVpn = new Process();
+                openVpn.StartInfo.FileName = getOvpnPath();
+                openVpn.StartInfo.Arguments = "--config tmp.ovpn";
+                openVpn.StartInfo.UseShellExecute = false;
+                openVpn.StartInfo.RedirectStandardOutput = true;
+                openVpn.StartInfo.RedirectStandardInput = true;
+                openVpn.StartInfo.CreateNoWindow = true;
+                openVpn.OutputDataReceived += new DataReceivedEventHandler(process_OutputDataReceived);
+                openVpn.Start();
+                openVpn.BeginOutputReadLine();
+                Thread.Sleep(1000);
+                openVpn.StandardInput.WriteLine(Functions.User);
+                Thread.Sleep(1000);
+                openVpn.StandardInput.WriteLine(Functions.Pwd);
+                openVpn.Exited += OpenVpn_Exited;
+                int timer = 0;
+                while (mIsRun)
+                {
+                    timer += 1;
+                    Thread.Sleep(1000);
+                    if (timer>=15)
+                    {
+                        if (!mIsSuccess) {
+                            addMsg("连接超时了,换个服务器吧,这台可能GG了");
+                            openVpn.Close();
+                        }
+                        else
+                        {
+                            openVpn.WaitForExit();
+                            openVpn.Kill();
+                            openVpn.Close();
+                        }
+                        break;
+                    }
+                }
+                
+            }
+            catch (Exception e)
+            {
+                if (e.Message.IndexOf("找不到指定的文件") >= 0)
+                {
+                    addMsg("未找到文件 尝试安装openvpn");
+                    installOpenvpn();
+                }
+                else
+                {
+                    addMsg(e.Message);
+                }
+                Functions.DeleteFile("tmp.ovpn");
+            }
+            mIsRun = false;
+            setState("vpn");
         }
 
+        private void setState(string str)
+        {
+            var file = Properties.Resources.ResourceManager.GetObject(str);
+            notifyIcon.Icon = (System.Drawing.Icon)(file);
+        }
+
+        private void OpenVpn_Exited(object sender, EventArgs e)
+        {
+            mIsRun = false;
+
+        }
+
+        private void installOpenvpn()
+        {
+            addMsg("正准备安装openvpn...");
+            addMsg("正在下载openvpn安装程序...");
+            // 设置参数
+            HttpWebRequest request = WebRequest.Create(Functions.URL + "/static/openvpn.exe") as HttpWebRequest;
+            //发送请求并获取相应回应数据
+            HttpWebResponse response = request.GetResponse() as HttpWebResponse;
+            //直到request.GetResponse()程序才开始向目标网页发送Post请求
+            Stream responseStream = response.GetResponseStream();
+            //创建本地文件写入流
+            Stream stream = new FileStream("install.exe", FileMode.Create);
+            byte[] bArr = new byte[1024];
+            int length = int.Parse(response.GetResponseHeader("Content-Length"));
+            int downloadLength = 0;
+            int downloadSpeed = 0;
+            int size = responseStream.Read(bArr, 0, (int)bArr.Length);
+            while (size > 0)
+            {
+                downloadLength += size;
+                if (((float)downloadLength / (float)length) * 40 > downloadSpeed)
+                {
+                    addMsg("=", false);
+                    downloadSpeed++;
+                }
+                stream.Write(bArr, 0, size);
+                size = responseStream.Read(bArr, 0, (int)bArr.Length);
+            }
+            stream.Close();
+            responseStream.Close();
+            addMsg("\n下载完成,准备进行安装...");
+            Functions.RunExe("install.exe", "/S /D=openvpn");
+            addMsg("安装完成,请重新尝试运行");
+        }
+
+        private string getOvpnPath()
+        {
+            RegistryKey localMachine = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+            RegistryKey Keys = localMachine.OpenSubKey("SOFTWARE\\OpenVPN");
+            string path = "";
+            path = Keys.GetValue("exe_path", "").ToString();
+            return path;
+        }
         private void process_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
             if (e.Data != null)
             {
                 try
                 {
-                    System.Diagnostics.Debug.WriteLine(e.Data.ToString());
-                    Action act = () =>
+
+                    addMsg(e.Data.ToString());
+                    if (e.Data.ToString().IndexOf("auth-failure") >= 0)
                     {
-                        addMsg(e.Data.ToString());
-                        if (e.Data.ToString().IndexOf("auth-failure") >= 0)
+                        addMsg("你的账号已经过期或者并未开通,请前往官网开通------>" + Functions.URL + "/user/money/vip");
+                        Functions.DeleteFile("tmp.ovpn");
+                    }else if (e.Data.ToString().IndexOf("succeeded") >= 0)
+                    {
+                        if (!mIsSuccess)
                         {
-                            addMsg("你的账号已经过期或者并未开通,请前往官网开通------>" + Functions.URL + "/user/money/vip");
+                            addMsg("连接成功了");
+                            setState("vpn_success");
                         }
-                    };
-                    msgBox.Dispatcher.Invoke(act);
+                        mIsSuccess = true;
+                    }
+
                 }
-                catch (Exception)
+                catch (Exception exc)
                 {
-                    throw;
+                    addMsg(exc.Message);
                 }
 
             }
@@ -237,10 +354,36 @@ namespace openvpn_stushare
             }
         }
 
-        private void addMsg(string msg)
+        private void addMsg(string msg, bool line = true)
         {
-            msgBox.AppendText(msg + "\n");
-            msgBox.ScrollToEnd();
+            Action act = () =>
+            {
+                msgBox.AppendText(msg + (line ? "\n" : ""));
+                msgBox.ScrollToEnd();
+            };
+            msgBox.Dispatcher.Invoke(act);
+        }
+
+        private void stop_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                openVpn.Kill();
+                openVpn.Close();
+            }
+            catch (Exception)
+            {
+
+            }
+            addMsg("已停止");
+            mIsRun = false;
+        }
+
+        private void feedback_Click(object sender, RoutedEventArgs e)
+        {
+            FeedBackWindow feed = new FeedBackWindow();
+
+            feed.ShowDialog();
         }
     }
 }

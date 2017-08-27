@@ -6,12 +6,12 @@
         xmlns:local="clr-namespace:openvpn_stushare"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="登录 - stuShare" Height="151.866" Width="300"
+        Title="登录 - stuShare" Height="155.611" Width="307.073"
         Loaded="Window_Loaded"
         Closing="Window_Closing"
         ResizeMode="NoResize">
     <Grid>
-       
+
         <TextBox Name="Edit_User" FontSize="16" HorizontalAlignment="Left" Height="25" Margin="62,20,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="221"/>
         <PasswordBox Name="Edit_Pwd" FontSize="16" HorizontalAlignment="Left" Height="25" Margin="63,54,0,0" PasswordChar="●"  VerticalAlignment="Top" Width="221"/>
         <TextBlock HorizontalAlignment="Left" Height="25" Margin="21,23,0,0" TextWrapping="Wrap" Text="账号:" VerticalAlignment="Top" Width="36"/>

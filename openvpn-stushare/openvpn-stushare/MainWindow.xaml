@@ -24,8 +24,9 @@
         <TextBox x:Name="msgBox" HorizontalAlignment="Left" Height="117" IsReadOnly="True"
                  Margin="10,253,0,0" TextWrapping="Wrap" Text="消息提示:&#xD;&#xA;" 
                  VerticalScrollBarVisibility="Visible" AcceptsReturn="True" VerticalAlignment="Top" Width="626"/>
-        <Button x:Name="start" Content="连接" FontSize="16"  Margin="473,375,24,9.6" Click="start_Click"/>
-        <Button x:Name="f5" Content="刷新" FontSize="16"  Margin="305,375,192,9.6" Click="f5_Click"/>
-        <Button x:Name="test" Content="测试" FontSize="16"  Margin="137,375,360,9.6" Click="test_Click"/>
+        <Button x:Name="start" Content="连接" FontSize="16"  Margin="527,375,24,10" Click="start_Click"/>
+        <Button x:Name="f5" Content="刷新" FontSize="16"  Margin="297,375,254,10" Click="f5_Click"/>
+        <Button x:Name="stop" Content="停止" FontSize="16"  Margin="412,375,139,10" Click="stop_Click"/>
+        <Button x:Name="feedback" Content="我有话说" FontSize="16"  Margin="182,375,369,10" Click="feedback_Click"/>
     </Grid>
 </Window>

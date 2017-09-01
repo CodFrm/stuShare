@@ -1,0 +1,82 @@
+{include 'public/header'}
+<!-- 内容区域 -->
+<div class="tpl-content-wrapper">
+    <div class="row-content am-cf">
+        <div class="widget am-cf">
+            <div class="widget-head am-cf">
+                <div class="widget-title am-fl">桌面客户端通知内容</div>
+                <div class="widget-function am-fr">
+                    <a href="javascript:;" class="am-icon-cog"></a>
+                </div>
+            </div>
+            <div class="widget-body am-fr">
+
+                <form class="am-form tpl-form-line-form">
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3 am-form-label">公告内容 <span
+                                class="tpl-form-line-small-title">Content</span></label>
+                        <div class="am-u-sm-9">
+                            <textarea id="pc_content" class="" rows="10" placeholder="请输入公告内容">{$setting['pc_notice_msg']}</textarea>
+                            <small>{$setting['pc_notice_time']}</small>
+                        </div>
+                    </div>
+
+                    <div class="am-form-group">
+                        <div class="am-u-sm-9 am-u-sm-push-3">
+                            <button type="button" class="am-btn am-btn-primary tpl-btn-bg-color-success "
+                                    onclick="post(this)">提交
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="widget am-cf">
+            <div class="widget-head am-cf">
+                <div class="widget-title am-fl">影视App通知内容</div>
+                <div class="widget-function am-fr">
+                    <a href="javascript:;" class="am-icon-cog"></a>
+                </div>
+            </div>
+            <div class="widget-body am-fr">
+                <form class="am-form tpl-form-line-form">
+                    <div class="am-form-group">
+                        <label class="am-u-sm-3 am-form-label">公告内容 <span
+                                class="tpl-form-line-small-title">Content</span></label>
+                        <div class="am-u-sm-9">
+                            <textarea class="" rows="10" id="movie_content" placeholder="请输入公告内容">{$setting['movie_notice_msg']}</textarea>
+                            <small>{$setting['movie_notice_time']}</small>
+                        </div>
+                    </div>
+
+                    <div class="am-form-group">
+                        <div class="am-u-sm-9 am-u-sm-push-3">
+                            <button type="button" class="am-btn am-btn-primary tpl-btn-bg-color-success "
+                                    onclick="post(this)">提交
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include 'public/footer'}
+<script>
+    function post() {
+        var movie_content = $('#movie_content').val();
+        var pc_content = $('#pc_content').val();
+        $.ajax({
+            url: "{:url('admin/setting/notice_setting')}",
+            type: "post",
+            data: {
+                pc_notice_msg: pc_content,
+                movie_notice_msg: movie_content
+            },
+            success: function (obj) {
+                alert(obj['msg']);
+            }
+        });
+
+    }
+</script>

@@ -53,16 +53,16 @@
                         <label class="am-u-sm-3 am-form-label">版本号 <span
                                 class="tpl-form-line-small-title">Version</span></label>
                         <div class="am-u-sm-9">
-                            <input type="text" class="tpl-form-input" id="movie_app_update_v"
-                                   value="{$setting['movie_app_update_v']}">
+                            <input type="text" class="tpl-form-input" id="movie_update_v"
+                                   value="{$setting['movie_update_v']}">
                         </div>
                     </div>
                     <div class="am-form-group">
                         <label class="am-u-sm-3 am-form-label">更新包 <span
                                 class="tpl-form-line-small-title">Url</span></label>
                         <div class="am-u-sm-9">
-                            <input type="text" class="tpl-form-input" id="movie_app_update_u"
-                                   value="{$setting['movie_app_update_u']}">
+                            <input type="text" class="tpl-form-input" id="movie_update_u"
+                                   value="{$setting['movie_update_u']}">
                         </div>
                     </div>
 
@@ -81,16 +81,16 @@
 {include 'public/footer'}
 <script>
     function post() {
-        var movie_app_update_v = $('#movie_app_update_v').val();
-        var movie_app_update_u = $('#movie_app_update_u').val();
+        var movie_update_v = $('#movie_update_v').val();
+        var movie_update_u = $('#movie_update_u').val();
         var pc_update_v = $('#pc_update_v').val();
         var pc_update_u = $('#pc_update_u').val();
         $.ajax({
-            url: "{:url('admin/index/u_setting')}",
+            url: "{:url('admin/setting/u_setting')}",
             type: "post",
             data: {
-                movie_app_update_v: movie_app_update_v,
-                movie_app_update_u: movie_app_update_u,
+                movie_update_v: movie_update_v,
+                movie_update_u: movie_update_u,
                 pc_update_v: pc_update_v,
                 pc_update_u: pc_update_u
             },

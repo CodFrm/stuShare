@@ -217,7 +217,7 @@ class db {
             $sql .= $this->where($where,$param);
         }
         $result = db::$db->prepare($sql);
-        if ($count=$result->execute($param)) {
+        if ($result->execute($param)) {
             return $result->rowCount();
         }
         return false;

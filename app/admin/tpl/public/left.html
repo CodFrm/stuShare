@@ -42,10 +42,28 @@
             </a>
         </li>
         <li class="sidebar-nav-link">
-            <a href="{:url('admin/index/setting')}" class="{if $action=='setting'}active
+            <a href="javascript:;" class="sidebar-nav-sub-title {if $ctrl=='setting'}active
             {/if}">
                 <i class="am-icon-cog sidebar-nav-link-logo"></i> 系统设置
+                {if $action=='setting'}
+                <span class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico sidebar-nav-sub-ico-rotate"></span>
+                {else}
+                <span class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
+                {/if}
             </a>
+            <ul class="sidebar-nav sidebar-nav-sub" {if $ctrl=='setting'}style="display: block;"{/if}>
+        <li class="sidebar-nav-link">
+            <a href="{:url('admin/setting/notice')}">
+                <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 通知设置
+            </a>
+        </li>
+                <li class="sidebar-nav-link">
+                    <a href="{:url('admin/setting/update')}" {if $action=='update'}class="sub-active"{/if}>
+                        <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 更新设置
+                    </a>
+                </li>
+            </ul>
+
         </li>
         <li class="sidebar-nav-link">
             <a href="{:url('admin/index/logout')}" class="{if $action=='logout'}active

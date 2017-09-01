@@ -72,7 +72,7 @@ function getIP() {
  * @param $type
  * @return string
  */
-function getRandString($length, $type=2) {
+function getRandString($length, $type = 2) {
     $randString = '1234567890qwwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHHJKLZXCVBNM';
     $retStr = '';
     for ($n = 0; $n < $length; $n++) {
@@ -103,9 +103,17 @@ function getUser($user) {
  */
 function config($key, $value = '') {
     if (!empty($value)) {
-        return DB('config')->update(['value' => $value], ['`key`' => $key]);
+        if (config($key) !== false) {
+            return DB('config')->update(['value' => $value], ['`key`' => $key]);
+        } else {
+            return DB('config')->insert(['value' => $value, 'key' => $key]);
+        }
     } else {
-        return DB('config')->find(['`key`' => $key])['value'];
+        $rec = DB('config')->find(['`key`' => $key]);
+        if (!$rec) {
+            return false;
+        }
+        return $rec['value'];
     }
 }
 
@@ -149,16 +157,16 @@ function getAuth($group_id) {
 function isAuth($group_id) {
     $rec = DB('groupauth as a|auth as b')->select(['group_id' => $group_id, 'a.auth_id=b.auth_id']);
     $model = input('model');
-    $ctrl=input('ctrl');
-    $action=input('action');
+    $ctrl = input('ctrl');
+    $action = input('action');
     while ($msg = $rec->fetch()) {
         if ($count = substr_count($msg['auth_interface'], '->')) {
             if ($count == 1) {
-                if (($model.'->'.$ctrl) == $msg['auth_interface']) {
+                if (($model . '->' . $ctrl) == $msg['auth_interface']) {
                     return true;
                 }
-            }else{
-                if (($model.'->'.$ctrl.'->'.$action) == $msg['auth_interface']) {
+            } else {
+                if (($model . '->' . $ctrl . '->' . $action) == $msg['auth_interface']) {
                     return true;
                 }
             }

@@ -12,6 +12,7 @@ namespace openvpn_stushare
 {
     class Functions
     {
+        public static float Version = 0.1F;
         /// <summary>
         /// 写操作
         /// </summary>
@@ -78,7 +79,7 @@ namespace openvpn_stushare
         /// <param name="Url"></param>
         /// <param name="postDataStr"></param>
         /// <returns></returns>
-        public static string HttpGet(string Url, string postDataStr)
+        public static string HttpGet(string Url, string postDataStr = "")
         {
             try
             {
@@ -108,7 +109,7 @@ namespace openvpn_stushare
             {
                 return "";
             }
-          
+
         }
         /// <summary>
         /// Http发送Post请求方法
@@ -116,7 +117,7 @@ namespace openvpn_stushare
         /// <param name="Url"></param>
         /// <param name="postDataStr"></param>
         /// <returns></returns>
-        public static string HttpPost(string Url, string postDataStr)
+        public static string HttpPost(string Url, string postDataStr = "")
         {
             try
             {
@@ -151,7 +152,7 @@ namespace openvpn_stushare
 
                 return "";
             }
-           
+
         }
 
         /// <summary>
@@ -200,7 +201,7 @@ namespace openvpn_stushare
             {
                 throw;
             }
-           
+
         }
     }
 }

@@ -4,7 +4,7 @@
  * author:Farmer
  * time:2017/6/8 21:50
  * blog:blog.icodef.com
- * function:客户端调用接口
+ * function:客户端调用接口(需要登录)
  *============================
  */
 
@@ -34,46 +34,6 @@ class api extends auth {
             $rows[] = $tmp;
         }
         return json(['code' => 0, 'count' => $count, 'rows' => $rows]);
-    }
-
-    /**
-     * 软件更新信息获取 影视
-     * @author Farmer
-     */
-    public function update_m() {
-        $ret['v'] = config('movie_app_update_v');
-        $ret['u'] = config('movie_app_update_u');
-        return json($ret);
-    }
-    /**
-     * 软件更新信息获取 win 校园网客户端
-     * @author Farmer
-     */
-    public function update_pc() {
-        $ret['v'] = config('pc_update_v');
-        $ret['u'] = config('pc_update_u');
-        return json($ret);
-    }
-
-    /**
-     * 通知获取 影视
-     * @author Farmer
-     * @return string
-     */
-    public function notice_m(){
-        $ret['msg'] = config('movie_notice_msg');
-        $ret['t'] = config('movie_notice_time');
-        return json($ret);
-    }
-    /**
-     * 通知获取 win 校园网客户端
-     * @author Farmer
-     * @return string
-     */
-    public function notice_pc(){
-        $ret['msg'] = config('pc_notice_msg');
-        $ret['t'] = config('pc_notice_time');
-        return json($ret);
     }
 
     /**

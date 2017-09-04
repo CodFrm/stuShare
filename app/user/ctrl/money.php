@@ -19,7 +19,7 @@ class money extends auth {
         V()->display();
     }
 
-    private $iplist = ['127.0.0.1', 'localhost'];
+    private $iplist = ['127.0.0.1', 'localhost','::1'];
 
     public function pay_call() {
         if (in_array(getIP(), $this->iplist)) {
@@ -39,12 +39,6 @@ class money extends auth {
             }
             echo $ret;
         }
-        //将到期用户更改用户组 密码
-        $red = DB('user')->select(['expire_time' => [time(), '<']]);
-        while ($row = $red->fetch()) {
-            DB(':radusergroup')->update(['groupname' => 'VIP0'], ['username' => $row['user']]);
-            DB(':radcheck')->update(['op' => '='], ['username' => $row['user']]);
-        }
     }
 
     private function money_change($uid, $change, $log) {
@@ -63,7 +57,7 @@ class money extends auth {
             if ($month <= 0) {
                 $json = ['code' => -1, 'msg' => '请输入正确的月数'];
             } else if ($userMsg = uidUser($_COOKIE['uid'])) {
-                $month_money = 20;
+                $month_money = 19.9;
                 if ($userMsg['money'] < $month * $month_money) {
                     $json = ['code' => -1, 'msg' => '余额不足,差' . (($month * $month_money) - $userMsg['money']) . '元'];
                 } else {
@@ -75,9 +69,9 @@ class money extends auth {
                     } else {//续费的
                         $extime = $userMsg['expire_time'] + $month * 2592000;
                     }
-                    DB(':radusergroup')->update(['groupname' => 'VIP1'], ['username' => $userMsg['user']]);
+                    //DB(':radusergroup')->update(['groupname' => 'VIP1'], ['username' => $userMsg['user']]);
                     DB('user')->update(['expire_time' => $extime], ['uid' => $userMsg['uid']]);
-                    DB(':radcheck')->update(['op' => ':='], ['username' => $userMsg['user']]);
+                    //DB(':radcheck')->update(['op' => ':='], ['username' => $userMsg['user']]);
                 }
             }
             return json($json);

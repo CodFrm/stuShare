@@ -1,0 +1,45 @@
+{include 'public/header'}
+<body>
+<div class="header">
+    <div class="title">
+        <img src="__HOME__/static/image/avatar.jpg" alt="">
+        <span>stuShare</span>
+    </div>
+</div>
+<div class="content">
+    <div class="user-msg">
+        <h2>留下你宝贵的意见:</h2>
+        <div style="text-align: center">
+            <input id="call" type="text" placeholder="您的联系方式" style="width: 95%;height: 24px;margin-bottom: 20px">
+
+            <textarea id="msg" style="width: 95%;" rows="10" placeholder="请输入您的意见"></textarea>
+        </div>
+
+        <div id="server-list" class="menu">
+            <br>
+            <a id="post" class="menu-item">提交</a>
+        </div>
+
+        <br>
+        <div class="menu">
+            <a href="{:url('user/index/index')}" class="menu-item">返回首页</a>
+        </div>
+    </div>
+</div>
+{include 'public/footer'}
+
+<script>
+    $('#post').click(function () {
+        $.ajax({
+            url: "{:url('user/api/feedback')}",
+            type:'post',
+            data:{call:$('#call').val(),msg:$('#msg').val()},
+            success: function (obj) {
+                alert(obj['msg']);
+                if(obj['code']=='0'){
+                    window.location="{:url('user/index/index')}";
+                }
+            }
+        });
+    });
+</script>

@@ -88,20 +88,29 @@ namespace openvpn_stushare
         public void getServerData()
         {
 
-            string retData = Functions.HttpGet(Functions.URL + "/user/api/getserver", "");
-            JObject jo = (JObject)JsonConvert.DeserializeObject(retData);
-            Dispatcher.BeginInvoke(new Action(delegate
+            try
             {
-                addMsg("刷新服务器列表...");
-                listView.Items.Clear();
-                int count = 0;
-                foreach (JObject item in jo["rows"])
+                string retData = Functions.HttpGet(Functions.URL + "/user/api/getserver", "");
+                JObject jo = (JObject)JsonConvert.DeserializeObject(retData);
+                Action act = () =>
                 {
-                    count++;
-                    listView.Items.Add(new serverData(item["name"].ToString(), item["ip"].ToString(), item["count"].ToString(), item["config"].ToString()));
-                }
-                addMsg("刷新完成,共" + count.ToString() + "台");
-            }));
+                    addMsg("刷新服务器列表...");
+                    listView.Items.Clear();
+                    int count = 0;
+                    foreach (JObject item in jo["rows"])
+                    {
+                        count++;
+                        listView.Items.Add(new serverData(item["name"].ToString(), item["ip"].ToString(), item["count"].ToString(), item["config"].ToString()));
+                    }
+                    addMsg("刷新完成,共" + count.ToString() + "台");
+                };
+                Dispatcher.Invoke(act);
+            }
+            catch (Exception e)
+            {
+                addMsg(e.Message);
+            }
+
         }
         class serverData
         {
@@ -197,7 +206,8 @@ namespace openvpn_stushare
             try
             {
                 setState("vpn_wait");
-
+                Functions.WriteFile("pass.txt", Functions.User + "\r\n" + Functions.Pwd + "\r\n");
+                mConfig = mConfig.Replace("auth-user-pass", "auth-user-pass pass.txt");
                 Functions.WriteFile("tmp.ovpn", mConfig);
                 openVpn = new Process();
                 openVpn.StartInfo.FileName = getOvpnPath();
@@ -208,20 +218,20 @@ namespace openvpn_stushare
                 openVpn.StartInfo.CreateNoWindow = true;
                 openVpn.OutputDataReceived += new DataReceivedEventHandler(process_OutputDataReceived);
                 openVpn.Start();
+                openVpn.Exited += OpenVpn_Exited;
                 openVpn.BeginOutputReadLine();
                 Thread.Sleep(1000);
-                openVpn.StandardInput.WriteLine(Functions.User);
-                Thread.Sleep(1000);
-                openVpn.StandardInput.WriteLine(Functions.Pwd);
-                openVpn.Exited += OpenVpn_Exited;
+                Functions.DeleteFile("tmp.ovpn");
+                Functions.DeleteFile("pass.txt");
                 int timer = 0;
                 while (mIsRun)
                 {
                     timer += 1;
                     Thread.Sleep(1000);
-                    if (timer>=15)
+                    if (timer >= 15)
                     {
-                        if (!mIsSuccess) {
+                        if (!mIsSuccess)
+                        {
                             addMsg("连接超时了,换个服务器吧,这台可能GG了");
                             openVpn.Close();
                         }
@@ -234,7 +244,7 @@ namespace openvpn_stushare
                         break;
                     }
                 }
-                
+
             }
             catch (Exception e)
             {
@@ -247,7 +257,6 @@ namespace openvpn_stushare
                 {
                     addMsg(e.Message);
                 }
-                Functions.DeleteFile("tmp.ovpn");
             }
             mIsRun = false;
             setState("vpn");
@@ -262,7 +271,7 @@ namespace openvpn_stushare
         private void OpenVpn_Exited(object sender, EventArgs e)
         {
             mIsRun = false;
-
+            setState("vpn");
         }
 
         private void installOpenvpn()
@@ -298,15 +307,24 @@ namespace openvpn_stushare
             addMsg("\n下载完成,准备进行安装...");
             Functions.RunExe("install.exe", "/S /D=openvpn");
             addMsg("安装完成,请重新尝试运行");
+            Functions.DeleteFile("install.exe");
         }
 
         private string getOvpnPath()
         {
-            RegistryKey localMachine = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
-            RegistryKey Keys = localMachine.OpenSubKey("SOFTWARE\\OpenVPN");
-            string path = "";
-            path = Keys.GetValue("exe_path", "").ToString();
-            return path;
+            try
+            {
+                RegistryKey localMachine = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+                RegistryKey Keys = localMachine.OpenSubKey("SOFTWARE\\OpenVPN");
+                string path = "";
+                path = Keys.GetValue("exe_path", "").ToString();
+                return path;
+            }
+            catch (Exception)
+            {
+                return "openvpn.exe";
+            }
+
         }
         private void process_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
@@ -319,8 +337,8 @@ namespace openvpn_stushare
                     if (e.Data.ToString().IndexOf("auth-failure") >= 0)
                     {
                         addMsg("你的账号已经过期或者并未开通,请前往官网开通------>" + Functions.URL + "/user/money/vip");
-                        Functions.DeleteFile("tmp.ovpn");
-                    }else if (e.Data.ToString().IndexOf("succeeded") >= 0)
+                    }
+                    else if (e.Data.ToString().IndexOf("succeeded") >= 0)
                     {
                         if (!mIsSuccess)
                         {

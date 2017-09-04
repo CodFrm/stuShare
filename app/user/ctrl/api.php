@@ -44,6 +44,7 @@ class api extends auth {
         $rec = DB('server')->select();
         $ret = ['code' => 0, 'msg' => 'success'];
         foreach ($rec->fetchAll() as $item) {
+            $tmp['svid']=$item['svid'];
             $tmp['name'] = $item['name'];
             $tmp['ip'] = $item['ip'];
             $tmp['config'] = $item['config'];
@@ -53,6 +54,22 @@ class api extends auth {
         return json($ret);
     }
 
+    /**
+     * 下载服务器配置
+     * @author Farmer
+     * @param int $svid
+     */
+    public function downconfig($svid=0){
+        $row=DB('server')->find(['svid'=>$svid]);
+        if($row){
+            header('Content-Type:application/text');
+            header('Content-Disposition: attachment; filename="'.$row['name'].'.ovpn"');
+            header('Content-Length:'.strlen($row['config']));
+            echo $row['config'];
+        }else{
+            echo 'svid 错误';
+        }
+    }
     /**
      * 获取权限
      * @author Farmer

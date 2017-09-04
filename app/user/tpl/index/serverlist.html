@@ -1,0 +1,34 @@
+{include 'public/header'}
+<body>
+<div class="header">
+    <div class="title">
+        <img src="__HOME__/static/image/avatar.jpg" alt="">
+        <span>stuShare</span>
+    </div>
+</div>
+<div class="content">
+    <div class="user-msg">
+        <h2>服务器列表: <span style="font-size: 14px">(点击下载对应的配置文件)</span></h2>
+        <div id="server-list" class="menu">
+        </div>
+
+        <br>
+        <div class="menu">
+            <a href="{:url('user/index/index')}" class="menu-item">返回首页</a>
+        </div>
+    </div>
+</div>
+{include 'public/footer'}
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: "{:url('user/api/getserver')}",
+            success: function (obj) {
+                obj['rows'].forEach(function (value) {
+                    $('#server-list').append('<a href="{:url('user/api/downconfig')}?svid='+value['svid']+'" class="menu-item">'+value['name']+' 在线'+value['count']+'人</a>');
+                });
+            }
+        });
+    });
+</script>

@@ -61,12 +61,20 @@ namespace openvpn_stushare
         /// <returns></returns>
         public static string ReadIni(string section, string key)
         {
-            string IniFilePath = @"/config.ini";
-            StringBuilder temp = new StringBuilder(255);
-            int i = GetPrivateProfileString(section, key, "", temp, 255, IniFilePath);
-            return temp.ToString();
+            try
+            {
+                string IniFilePath = @"/config.ini";
+                StringBuilder temp = new StringBuilder(255);
+                int i = GetPrivateProfileString(section, key, "", temp, 255, IniFilePath);
+                return temp.ToString();
+            }
+            catch (Exception)
+            {
+                return "";
+            }
+            
         }
-        public static string URL = "http://127.0.0.1/stushare";
+        public static string URL = "http://sv.icodef.com";
         internal static string version = "v0.1";
         private static CookieContainer cookie = new CookieContainer();
 
@@ -93,6 +101,7 @@ namespace openvpn_stushare
                 {
                     request.CookieContainer = cookie;
                 }
+                request.Timeout = 2000;
                 request.Method = "GET";
                 request.ContentType = "text/html;charset=UTF-8";
 
@@ -131,6 +140,7 @@ namespace openvpn_stushare
                 {
                     request.CookieContainer = cookie;
                 }
+                request.Timeout = 2000;
                 request.Method = "POST";
                 request.ContentType = "application/x-www-form-urlencoded";
                 request.ContentLength = postDataStr.Length;

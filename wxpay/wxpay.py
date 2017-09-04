@@ -81,7 +81,7 @@ def dealOrder(html):
     print orderList
     for arr in orderList:
         if arr.count >= 3:
-            GetHttp('http://'+lhurl+'/admin/money/pay_call?order=' +
+            GetHttp('http://'+lhurl+'/user/money/pay_call?order=' +
                     arr[2] + '&money=' + arr[0] + '&remarks=' + arr[1])
 
 def monitor():
@@ -123,8 +123,7 @@ def monitor():
                 sykey=synckey(dataJson['SyncKey']['List'])
             except:
                 print 'sykey error'
-        GetHttp('http://'+lhurl+'/admin/money/pay_call')
-
+                
 thread = threading.Thread(target=monitor)
 thread.start()
 thread.join()

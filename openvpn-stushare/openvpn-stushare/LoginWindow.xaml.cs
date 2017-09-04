@@ -37,6 +37,11 @@ namespace openvpn_stushare
         private void Login_Click(object sender, RoutedEventArgs e)
         {
             string retData = Functions.HttpPost(Functions.URL + "/index/login/login", "user=" + Edit_User.Text + "&pwd=" + Edit_Pwd.Password);
+            if (retData=="")
+            {
+                MessageBox.Show("访问超时,请先连接学校的网络(HNIU或者网线)");
+                return;
+            }
             JObject jo = (JObject)JsonConvert.DeserializeObject(retData);
             string zone = jo["code"].ToString();
             string zone_en = jo["msg"].ToString();
@@ -77,37 +82,48 @@ namespace openvpn_stushare
         private void init()
         {
             //多线程检查更新与公告,防止ui线程卡顿
-            string retData = Functions.HttpGet(Functions.URL + "/index/api/update_pc");
-            JObject jo = (JObject)JsonConvert.DeserializeObject(retData);
-            string v = jo["v"].ToString();
-            string u = jo["u"].ToString();
-
-            if (float.Parse(v)>Functions.Version)
+            try
             {
-                Action act = () =>
+                string retData = Functions.HttpGet(Functions.URL + "/index/api/update_pc");
+                if (retData=="")
                 {
-                    MessageBox.Show(this, "有新版本发布,将打开新版本的下载链接\n" + u, "更新提示");
-                    System.Diagnostics.Process.Start("explorer.exe", u);
-                    System.Environment.Exit(0);
-                };
-                Dispatcher.Invoke(act);
-            }
-            else
-            {
-                 retData = Functions.HttpGet(Functions.URL + "/index/api/notice_pc");
-                 jo = (JObject)JsonConvert.DeserializeObject(retData);
-                string msg = jo["msg"].ToString();
-                string t = jo["t"].ToString();
-                if (Functions.ReadIni("system", "nt") != t)
+                    return ;
+                }
+                JObject jo = (JObject)JsonConvert.DeserializeObject(retData);
+                string v = jo["v"].ToString();
+                string u = jo["u"].ToString();
+                if (float.Parse(v) > Functions.Version)
                 {
                     Action act = () =>
                     {
-                        MessageBox.Show(this, msg, "公告");
+                        MessageBox.Show(this, "有新版本发布,将打开新版本的下载链接\n" + u, "更新提示");
+                        System.Diagnostics.Process.Start("explorer.exe", u);
+                        System.Environment.Exit(0);
                     };
                     Dispatcher.Invoke(act);
-                    Functions.WriteIni("system","nt",t);
+                }
+                else
+                {
+                    retData = Functions.HttpGet(Functions.URL + "/index/api/notice_pc");
+                    jo = (JObject)JsonConvert.DeserializeObject(retData);
+                    string msg = jo["msg"].ToString();
+                    string t = jo["t"].ToString();
+                    if (Functions.ReadIni("system", "nt") != t)
+                    {
+                        Action act = () =>
+                        {
+                            MessageBox.Show(this, msg, "公告");
+                        };
+                        Dispatcher.Invoke(act);
+                        Functions.WriteIni("system", "nt", t);
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+            
 
         }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

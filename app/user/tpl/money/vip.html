@@ -8,10 +8,25 @@
 </div>
 <div class="content">
     <div class="user-msg">
+        {foreach $set_meal as $item}
+        <div class="sm-list">
+            <div class="sm-left">
+                <div class="sm-name">{$item['group_name']}</div>
+                <div class="sm-description">{$item['description']}</div>
+            </div>
+            <div class="sm-right">
+                <div class="sm-name">
+                    带宽:{$item['bandwidth']}M<br>价格:{$item['set_meal_money']}/月
+                </div>
+                <button class="sm-btn" onclick="sel({$item['tid']},{$item['set_meal_money']},'{$item['group_name']}');">选择</button>
+            </div>
+        </div>
+        {/foreach}
         <div class="select-month">
-            <span>充值月数:</span><input id="month" type="text" value="1"><span style="font-size: 12px;margin-left: 10px;">每月19.9元</span>
+            <span>充值月数:</span><input id="month" type="text" value="1"><span style="font-size: 12px;margin-left: 10px;">每月<span id="money">0</span>元(30天)</span>
             <br>
-            <span>将付款: <span id="pay">19.9</span>元</span>
+            <span>将付款: <span id="pay">0</span>元</span>
+            <span>选中套餐:<span id="sel">暂未选中</span> </span>
         </div>
         <div class="menu">
             <a id="kt" class="menu-item">确定开通</a>
@@ -20,24 +35,34 @@
     </div>
 </div>
 <script>
+    var money=0;
+    var tid=0;
     $(document).ready(function () {
         $('#month').on('input', function () {
-            $('#pay').text($('#month').val() * 19.9);
+            $('#pay').text($('#month').val() * money);
         });
         $('#kt').click(function () {
             var month = $('#month').val();
             $.ajax({
                 url: "{:url('user/money/vip')}",
                 type: 'POST',
-                data: {month:month},
+                data: {tid:tid,month: month},
                 success: function (json) {
                     alert(json['msg']);
                     if (json['code'] == 0) {
-                        window.location="{:url('user/index/index')}"
+                        window.location = "{:url('user/index/index')}"
                     }
                 }
             });
         });
+
     });
+    function sel(t,m,s){
+        tid=t;
+        money=m;
+        $('#sel').text(s);
+        $('#money').text(m);
+        $('#pay').text($('#month').val() * money);
+    }
 </script>
 {include 'public/footer'}

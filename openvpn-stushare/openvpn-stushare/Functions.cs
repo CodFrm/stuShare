@@ -80,7 +80,42 @@ namespace openvpn_stushare
 
         public static string User { get; internal set; }
         public static string Pwd { get; internal set; }
+        /// <summary>
+        /// 关闭进程
+        /// </summary>
+        /// <param name="processName">进程名</param>
+        public static void KillProcess(string processName)
+        {
+            Process[] myproc = Process.GetProcesses();
+            foreach (Process item in myproc)
+            {
+                if (item.ProcessName == processName)
+                {
+                    item.Kill();
+                }
+            }
+        }
+        //强制关闭最近打开的某个进程
 
+        public static void KillRecentProcess(string processName)
+        {
+            System.Diagnostics.Process[] Proc = System.Diagnostics.Process.GetProcessesByName(processName);
+            System.DateTime startTime = new DateTime();
+            int m, killId = 0;
+            for (m = 0; m < Proc.Length; m++)
+            {
+                if (startTime < Proc[m].StartTime)
+                {
+                    startTime = Proc[m].StartTime;
+                    killId = m;
+                }
+            }
+            if (Proc[killId].HasExited == false)
+            {
+                Proc[killId].Kill();
+            }
+
+        }
         /// <summary>
         /// Http发送Get请求方法
         /// </summary>

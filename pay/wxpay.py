@@ -13,11 +13,13 @@ from function import synckey
 from function import getRand
 import json
 global sykey
+global skey
 global dataJson
 lhurl='127.0.0.1/stushare'
 cookie = cookielib.MozillaCookieJar()
 handler = urllib2.HTTPCookieProcessor(cookie)
 opear = urllib2.build_opener(handler)
+wxUrl='wx2.qq.com'
 f=open('cookie.txt','r')
 cookieFile=f.read()
 f.close()
@@ -25,7 +27,7 @@ uin=subStr(str(cookieFile),'wxuin=',';')
 sid=subStr(str(cookieFile),'wxsid=',';')
 post='{"BaseRequest":{"Uin":"'+uin+'","Sid":"'+sid+'","Skey":"","DeviceID":"'+getDeviceID()+'"}}'
 cookieFile=cookieFile.replace('\n','')
-req = urllib2.Request('https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxinit?r=1346484012', data=post, headers={
+req = urllib2.Request('https://'+wxUrl+'/cgi-bin/mmwebwx-bin/webwxinit?r=1346484012', data=post, headers={
     'Cookie': cookieFile,
 })
 res = opear.open(req)
@@ -45,7 +47,7 @@ def GetHttp(url):
             'Accept-Language': 'zh-CN,zh;q=0.8,en-US;q=0.6,en;q=0.4',
             'Connection':'keep-alive',
             'Cache-Control':'no-cache',
-            'Referer':'https://wx2.qq.com/',
+            'Referer':'https://'+wxUrl+'/',
             'Cookie':cookieFile})
         res = opear.open(req)
         data = res.read()
@@ -65,7 +67,7 @@ def PostHttp(url,postData):
             'Accept-Language': 'zh-CN,zh;q=0.8,en-US;q=0.6,en;q=0.4',
             'Connection':'keep-alive',
             'Cache-Control':'no-cache',
-            'Referer':'https://wx2.qq.com/',
+            'Referer':'https://'+wxUrl+'/',
             'Cookie':cookieFile})
         res = opear.open(req)
         data = res.read()
@@ -88,8 +90,9 @@ def monitor():
     i = 0
     global sykey
     global dataJson
+    global skey
     while True:
-        url='https://webpush.wx2.qq.com/cgi-bin/mmwebwx-bin/synccheck?r='+Timestamp()+'3'
+        url='https://webpush.'+wxUrl+'/cgi-bin/mmwebwx-bin/synccheck?r='+Timestamp()+'3'
         url+='&'+urllib.urlencode({'skey':skey})
         url+='&'+urllib.urlencode({'sid':sid})+'&uin='+uin+'&deviceid='+getDeviceID()
         url+='&synckey='+sykey
@@ -101,7 +104,7 @@ def monitor():
             post+=json.dumps(dataJson['SyncKey']['List'])
             post+='},"rr":'+getRand(10)+'}'
             post=post.replace(' ','')
-            url='https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxsync?sid='+sid+'&'+urllib.urlencode({'skey':skey})
+            url='https://'+wxUrl+'/cgi-bin/mmwebwx-bin/webwxsync?sid='+sid+'&'+urllib.urlencode({'skey':skey})
             try:
                 data=PostHttp(url,post)
                 dataJson=json.loads(data)
@@ -112,15 +115,19 @@ def monitor():
             except:
                 print 'json error'
                 print post
-            sykey=synckey(dataJson['SyncKey']['List'])
+            t=synckey(dataJson['SyncKey']['List'])
+            if t!='':
+                sykey=t
         elif data.find('"1101"')>0:
             print 'cookie not'
             exit(0)
         elif sykey=='':
             try:
-                data=GetHttp('https://wx2.qq.com/cgi-bin/mmwebwx-bin/webwxinit?r=1346484012')
+                data=GetHttp('https://'+wxUrl+'/cgi-bin/mmwebwx-bin/webwxinit?r=1346484012')
                 dataJson=json.loads(data)
-                sykey=synckey(dataJson['SyncKey']['List'])
+                t=synckey(dataJson['SyncKey']['List'])
+                if t!='':
+                    sykey=t
             except:
                 print 'sykey error'
                 

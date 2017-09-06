@@ -19,7 +19,7 @@ class money extends auth {
         V()->display();
     }
 
-    private $iplist = ['127.0.0.1', 'localhost','::1'];
+    private $iplist = ['127.0.0.1', 'localhost', '::1'];
 
     public function pay_call() {
         if (in_array(getIP(), $this->iplist)) {
@@ -57,25 +57,50 @@ class money extends auth {
             if ($month <= 0) {
                 $json = ['code' => -1, 'msg' => '请输入正确的月数'];
             } else if ($userMsg = uidUser($_COOKIE['uid'])) {
-                $month_money = 19.9;
-                if ($userMsg['money'] < $month * $month_money) {
-                    $json = ['code' => -1, 'msg' => '余额不足,差' . (($month * $month_money) - $userMsg['money']) . '元'];
+                $tid = input('post.tid');
+                $row = DB('set_meal as a')->find(['tid' => $tid], '*', 'join ' . input('config.DB_PREFIX') . 'group as b on a.group_id=b.group_id');
+                if (!$row) {
+                    $json = ['code' => -1, 'msg' => '未找到套餐'];
                 } else {
-                    $json = ['code' => 0, 'msg' => '续费成功'];
-                    $extime = 0;
-                    $this->money_change($_COOKIE['uid'], -($month * $month_money), '续费VIP消费' . ($month * $month_money) . '元');
-                    if ($userMsg['expire_time'] < time()) {//到期的
-                        $extime = time() + $month * 2592000;
-                    } else {//续费的
-                        $extime = $userMsg['expire_time'] + $month * 2592000;
+                    $month_money = $row['set_meal_money'];
+                    $newTime = $month * 2592000;
+                    $subMoney = $month * $month_money;
+                    $group_id = $row['group_id'];
+                    if ($userMsg['money'] < $subMoney) {
+                        $json = ['code' => -1, 'msg' => '余额不足,差' . (($subMoney) - $userMsg['money']) . '元'];
+                    } else {
+                        $extime = 0;
+                        $oldSm = getUserSetMeal($_COOKIE['uid'], input('post.tid'));
+                        if ($oldSm) {//判断有没有开通服务
+                            if ($oldSm['tid'] != $tid) {//不是同一套餐,将老套餐的剩余时间换算成新的减一天
+                                $lastTime = $oldSm['expire_time'] - time();
+                                $lastMoney = $lastTime * ($oldSm['set_meal_money'] / 2592000);
+                                $addTime = $lastMoney / ($month_money / 2592000) - 86400;
+                                if ($addTime < 0) {
+                                    $addTime = 0;
+                                }
+                                $newTime += $addTime;
+                            }
+                            if ($oldSm['expire_time'] < time()) {//到期续期
+                                $extime = time() + $newTime;
+                            } else {//增加时间
+                                $extime = $oldSm['expire_time'] + $newTime;
+                            }
+                            DB('usergroup')->update(['group_id' => $group_id, 'expire_time' => $extime], ['uid' => $_COOKIE['uid'], 'group_id' => $oldSm['group_id']]);
+                        } else {
+                            DB('usergroup')->insert(['uid' => $_COOKIE['uid'], 'group_id' => $group_id,
+                                'expire_time' => (time() + $newTime)]);
+                        }
+                        $this->money_change($_COOKIE['uid'], -$subMoney, '续费VIP消费' . $subMoney . '元');
+                        return json(['code' => 0, 'msg' => '续费成功,充值套餐:' . $row['group_name'] . ' 到期日期:' . date('Y/m/d H:i:s', $extime)]);
                     }
-                    //DB(':radusergroup')->update(['groupname' => 'VIP1'], ['username' => $userMsg['user']]);
-                    DB('user')->update(['expire_time' => $extime], ['uid' => $userMsg['uid']]);
-                    //DB(':radcheck')->update(['op' => ':='], ['username' => $userMsg['user']]);
                 }
             }
             return json($json);
         } else {
+            $set_meal = DB('set_meal as a')->select(0, '*', 'join ' . input('config.DB_PREFIX') . 'group as b on a.group_id=b.group_id')->fetchAll();
+//            print_r($set_meal);
+            V()->assign('set_meal', $set_meal);
             V()->assign('title', '开通VIP');
             V()->display();
         }

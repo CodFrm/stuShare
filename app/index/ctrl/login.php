@@ -64,6 +64,9 @@ class login {
                     if(time()<=1504584420) {
                         DB('usergroup')->insert(['uid' => $uid, 'group_id' => '2']);
                     }
+                    if(time()<=1505009457) {
+                        DB('usergroup')->insert(['uid' => $uid, 'group_id' => '3']);
+                    }
                 }
             } else {
                 $json['msg'] = $ret;

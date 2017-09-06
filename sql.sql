@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50505
 File Encoding         : 65001
 
-Date: 2017-08-28 00:17:43
+Date: 2017-09-06 18:16:36
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -27,8 +27,10 @@ CREATE TABLE `share_accounting` (
   `nas_ip` varchar(255) NOT NULL,
   `allot_ip` varchar(255) NOT NULL,
   `session_id` varchar(255) NOT NULL,
-  PRIMARY KEY (`aid`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`aid`),
+  KEY `account_uid` (`uid`),
+  CONSTRAINT `account_uid` FOREIGN KEY (`uid`) REFERENCES `share_user` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of share_accounting
@@ -42,6 +44,20 @@ INSERT INTO `share_accounting` VALUES ('8', '1', '1503291981', '1503291982', '19
 INSERT INTO `share_accounting` VALUES ('9', '1', '1503292014', '1503292015', '192.168.1.13', '10.8.0.6', 'C8D72160071B0DAA44A072661BBD7EC0');
 INSERT INTO `share_accounting` VALUES ('10', '1', '1503292264', '1503808626', '192.168.1.13', '10.8.0.6', '5C71C3058359E693591252B79B5D29E3');
 INSERT INTO `share_accounting` VALUES ('11', '1', '1503842671', '1503843084', '192.168.1.13', '10.8.0.6', '574E773B2CEBA6099106078812219060');
+INSERT INTO `share_accounting` VALUES ('12', '1', '1504446686', '1504446813', '127.0.0.1', '10.8.0.6', 'D499004EE0CEE37D629E8C2A5094271B');
+INSERT INTO `share_accounting` VALUES ('13', '1', '1504446883', '1504446941', '127.0.0.1', '10.8.0.6', '3172D0B9C3B689DC9E02BE005C12B584');
+INSERT INTO `share_accounting` VALUES ('14', '1', '1504541054', '1504541073', '10.1.6.31', '10.8.0.62', 'EDEA8C28DB77A520BA5D00502D4E0DB3');
+INSERT INTO `share_accounting` VALUES ('15', '1', '1504541103', '1504541227', '10.1.6.31', '10.8.0.62', '3D8ECAECBB9152C9EEB4728130945635');
+INSERT INTO `share_accounting` VALUES ('16', '1', '1504541235', '1504541372', '10.1.6.31', '10.8.0.62', '8B8A85B38B3ED620071DE59447A8EA2C');
+INSERT INTO `share_accounting` VALUES ('17', '1', '1504541399', '1504541430', '10.1.6.31', '10.8.0.62', '03048C9C10AEE534310BE6E0B94DA578');
+INSERT INTO `share_accounting` VALUES ('18', '1', '1504541446', '1504541477', '10.1.6.31', '10.8.0.62', '245077A7669639B77BCB2C00832DAD03');
+INSERT INTO `share_accounting` VALUES ('19', '1', '1504541897', '10', '10.1.6.31', '10.8.0.62', 'ED7847A8DA0DD099C81E8A940B519E6D');
+INSERT INTO `share_accounting` VALUES ('20', '1', '1504542037', '1504542214', '10.1.6.31', '10.8.0.62', '3CC2A7CEA04518072282605DB6C342C3');
+INSERT INTO `share_accounting` VALUES ('21', '1', '1504542295', '1504542515', '10.1.6.31', '10.8.0.62', 'B026E466A3C44CA39B79496A5D26002A');
+INSERT INTO `share_accounting` VALUES ('22', '1', '1504542600', '1504542658', '10.1.6.31', '10.8.0.62', '4B6EE8D13E7D194ED073200E8915C357');
+INSERT INTO `share_accounting` VALUES ('23', '1', '1504542744', '1504542768', '10.1.6.31', '10.8.0.62', 'A909D3626167E0D10ADA515EE1519784');
+INSERT INTO `share_accounting` VALUES ('24', '1', '1504542936', '1504543002', '10.1.6.31', '10.8.0.62', '550107073D0050E882AA69297869D0BD');
+INSERT INTO `share_accounting` VALUES ('25', '1', '1504543026', '1504543037', '10.1.6.31', '10.8.0.62', '6C1D1CE91B43A88DA345E3901AA8706E');
 
 -- ----------------------------
 -- Table structure for share_auth
@@ -52,7 +68,7 @@ CREATE TABLE `share_auth` (
   `auth_interface` varchar(255) NOT NULL,
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   PRIMARY KEY (`auth_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of share_auth
@@ -63,6 +79,7 @@ INSERT INTO `share_auth` VALUES ('3', 'user->api', null);
 INSERT INTO `share_auth` VALUES ('4', 'user->movie->post', null);
 INSERT INTO `share_auth` VALUES ('5', 'admin', null);
 INSERT INTO `share_auth` VALUES ('6', 'radius', '允许用户通过认证');
+INSERT INTO `share_auth` VALUES ('7', 'user->movie->api', '影视解析');
 
 -- ----------------------------
 -- Table structure for share_config
@@ -78,10 +95,10 @@ CREATE TABLE `share_config` (
 -- Records of share_config
 -- ----------------------------
 INSERT INTO `share_config` VALUES ('base_auth', '1');
-INSERT INTO `share_config` VALUES ('movie_app_update_u', 'ww6du.com');
-INSERT INTO `share_config` VALUES ('movie_app_update_v', '14');
-INSERT INTO `share_config` VALUES ('pc_update_u', 'ww23w.12');
-INSERT INTO `share_config` VALUES ('pc_update_v', '1422');
+INSERT INTO `share_config` VALUES ('pc_notice_msg', '公告测试');
+INSERT INTO `share_config` VALUES ('pc_notice_time', '1504245919');
+INSERT INTO `share_config` VALUES ('pc_update_u', 'http://www.baidu.com');
+INSERT INTO `share_config` VALUES ('pc_update_v', '0.1');
 INSERT INTO `share_config` VALUES ('regip', '86400');
 
 -- ----------------------------
@@ -102,6 +119,7 @@ CREATE TABLE `share_feedback` (
 -- Records of share_feedback
 -- ----------------------------
 INSERT INTO `share_feedback` VALUES ('1', '中文', '可以吗?可以吗?可以吗?可以吗?可以吗?可以吗?可以吗?可以吗?可以吗?可以吗?可以吗?可以吗?可以吗?可以吗?可以吗?可以吗?可以吗?可以吗?可以吗?可以吗?可以吗?可以吗?可以吗?可以吗?可以吗?可以吗?', '0', '1503850102');
+INSERT INTO `share_feedback` VALUES ('1', '123123', '发到我范文芳违法二姑夫二个人挺好听基于亏空', '0', '1504455614');
 
 -- ----------------------------
 -- Table structure for share_group
@@ -111,15 +129,17 @@ CREATE TABLE `share_group` (
   `group_id` int(11) NOT NULL AUTO_INCREMENT COMMENT '群组id',
   `group_name` varchar(255) NOT NULL,
   PRIMARY KEY (`group_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of share_group
 -- ----------------------------
 INSERT INTO `share_group` VALUES ('1', '普通用户');
-INSERT INTO `share_group` VALUES ('2', '网络VIP1');
-INSERT INTO `share_group` VALUES ('3', '测试用');
+INSERT INTO `share_group` VALUES ('2', '自行车');
+INSERT INTO `share_group` VALUES ('3', '影视VIP1');
 INSERT INTO `share_group` VALUES ('4', '管理员');
+INSERT INTO `share_group` VALUES ('5', '摩托车');
+INSERT INTO `share_group` VALUES ('6', '小汽车');
 
 -- ----------------------------
 -- Table structure for share_groupauth
@@ -151,6 +171,7 @@ INSERT INTO `share_groupauth` VALUES ('4', '3');
 INSERT INTO `share_groupauth` VALUES ('4', '4');
 INSERT INTO `share_groupauth` VALUES ('4', '6');
 INSERT INTO `share_groupauth` VALUES ('2', '6');
+INSERT INTO `share_groupauth` VALUES ('3', '7');
 
 -- ----------------------------
 -- Table structure for share_ip
@@ -165,7 +186,8 @@ CREATE TABLE `share_ip` (
 -- ----------------------------
 -- Records of share_ip
 -- ----------------------------
-INSERT INTO `share_ip` VALUES ('127.0.0.1', '1503848004', '-1');
+INSERT INTO `share_ip` VALUES ('10.23.161.219', '1504490193', '-1');
+INSERT INTO `share_ip` VALUES ('10.1.6.31', '1504490193', '-1');
 
 -- ----------------------------
 -- Table structure for share_log
@@ -181,11 +203,24 @@ CREATE TABLE `share_log` (
   PRIMARY KEY (`log_id`),
   KEY `log_uid` (`log_uid`),
   CONSTRAINT `log_uid` FOREIGN KEY (`log_uid`) REFERENCES `share_user` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of share_log
 -- ----------------------------
+INSERT INTO `share_log` VALUES ('1', '1', '充值金额0.01元', '10', '1504449446', 'get:order=>VnUs_A81pXWw7JcNMVsbis0sbXQRNdHrMyiNb8rf2zsH1bMOVGQA8yXYtaW_p3oT,money=>0.01,remarks=>Farmer,s=>money, post: ip:127.0.0.1');
+INSERT INTO `share_log` VALUES ('2', '1', '充值金额0.01元', '10', '1504544792', 'get:order=>1NdwNXo83IK6RWXIJ2kDsz_nYxyURfpNUhjvvgv62LBfnUNQ3NMHwTpBC0WbLMj_,money=>0.01,remarks=>Farmer,s=>money, post: ip:127.0.0.1');
+INSERT INTO `share_log` VALUES ('3', '1', '充值金额0.01元', '10', '1504586203', 'get:order=>NPBB6yDOAXjhriCTyZz0N_zCYFkIjwIpC8fxz3IjRq6-prKJDnkBPArwbUplpqDk,money=>0.01,remarks=>Farmer,s=>money, post: ip:127.0.0.1');
+INSERT INTO `share_log` VALUES ('4', '1', '续费VIP消费14.9元', '10', '1504630421', 'get:s=>money, post:tid=>2,month=>1, ip:127.0.0.1');
+INSERT INTO `share_log` VALUES ('5', '1', '续费VIP消费19.9元', '10', '1504630466', 'get:s=>money, post:tid=>3,month=>1, ip:127.0.0.1');
+INSERT INTO `share_log` VALUES ('6', '1', '续费VIP消费9.9元', '10', '1504630557', 'get:s=>money, post:tid=>1,month=>1, ip:127.0.0.1');
+INSERT INTO `share_log` VALUES ('7', '1', '续费VIP消费9.9元', '10', '1504630571', 'get:s=>money, post:tid=>1,month=>1, ip:127.0.0.1');
+INSERT INTO `share_log` VALUES ('8', '1', '续费VIP消费19.9元', '10', '1504630579', 'get:s=>money, post:tid=>3,month=>1, ip:127.0.0.1');
+INSERT INTO `share_log` VALUES ('9', '1', '续费VIP消费9.9元', '10', '1504630595', 'get:s=>money, post:tid=>1,month=>1, ip:127.0.0.1');
+INSERT INTO `share_log` VALUES ('10', '1', '续费VIP消费19.9元', '10', '1504630607', 'get:s=>money, post:tid=>3,month=>1, ip:127.0.0.1');
+INSERT INTO `share_log` VALUES ('11', '1', '续费VIP消费19.9元', '10', '1504630631', 'get:s=>money, post:tid=>3,month=>1, ip:127.0.0.1');
+INSERT INTO `share_log` VALUES ('12', '1', '续费VIP消费59.6元', '10', '1504630662', 'get:s=>money, post:tid=>2,month=>4, ip:127.0.0.1');
+INSERT INTO `share_log` VALUES ('13', '1', '充值金额0.01元', '10', '1504692273', 'get:order=>20170906200040011100940096747081,money=>0.01,remarks=>Farmer,s=>money, post: ip:127.0.0.1');
 
 -- ----------------------------
 -- Table structure for share_order
@@ -202,6 +237,10 @@ CREATE TABLE `share_order` (
 -- ----------------------------
 -- Records of share_order
 -- ----------------------------
+INSERT INTO `share_order` VALUES ('1NdwNXo83IK6RWXIJ2kDsz_nYxyURfpNUhjvvgv62LBfnUNQ3NMHwTpBC0WbLMj_', '1504544792', '0.0100', 'Farmer');
+INSERT INTO `share_order` VALUES ('20170906200040011100940096747081', '1504692273', '0.0100', 'Farmer');
+INSERT INTO `share_order` VALUES ('NPBB6yDOAXjhriCTyZz0N_zCYFkIjwIpC8fxz3IjRq6-prKJDnkBPArwbUplpqDk', '1504586203', '0.0100', 'Farmer');
+INSERT INTO `share_order` VALUES ('VnUs_A81pXWw7JcNMVsbis0sbXQRNdHrMyiNb8rf2zsH1bMOVGQA8yXYtaW_p3oT', '1504449446', '0.0100', 'Farmer');
 
 -- ----------------------------
 -- Table structure for share_server
@@ -222,6 +261,28 @@ INSERT INTO `share_server` VALUES ('1', '192.168.1.13', '树莓派', 0x636C69656
 INSERT INTO `share_server` VALUES ('2', '192.168.1.10', '测试', 0x656D6D6D6D6D6D);
 
 -- ----------------------------
+-- Table structure for share_set_meal
+-- ----------------------------
+DROP TABLE IF EXISTS `share_set_meal`;
+CREATE TABLE `share_set_meal` (
+  `tid` int(11) NOT NULL AUTO_INCREMENT COMMENT '套餐id',
+  `group_id` int(11) NOT NULL COMMENT '群组id',
+  `bandwidth` int(11) NOT NULL COMMENT '带宽',
+  `description` text NOT NULL COMMENT '描述',
+  `set_meal_money` double NOT NULL COMMENT '购买金额',
+  PRIMARY KEY (`tid`),
+  KEY `smg_id` (`group_id`),
+  CONSTRAINT `smg_id` FOREIGN KEY (`group_id`) REFERENCES `share_group` (`group_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of share_set_meal
+-- ----------------------------
+INSERT INTO `share_set_meal` VALUES ('1', '2', '4', '4M带宽,满足日常需求,游戏,查资料,上百度,高清电影随意看', '9.9');
+INSERT INTO `share_set_meal` VALUES ('2', '5', '7', '7M带宽,满足日常需求,游戏,看直播,超清电影不在话下', '14.9');
+INSERT INTO `share_set_meal` VALUES ('3', '6', '10', '10M带宽,满足以上所有需求,适合经常下载东西的人使用', '19.9');
+
+-- ----------------------------
 -- Table structure for share_token
 -- ----------------------------
 DROP TABLE IF EXISTS `share_token`;
@@ -236,65 +297,18 @@ CREATE TABLE `share_token` (
 -- ----------------------------
 -- Records of share_token
 -- ----------------------------
-INSERT INTO `share_token` VALUES ('1', 'xawgEfoj1503376788', '1503381544');
-INSERT INTO `share_token` VALUES ('1', 'OmtqHf061503750687', '1503750688');
-INSERT INTO `share_token` VALUES ('1', 'SDxGIIp81503750768', '1503750770');
-INSERT INTO `share_token` VALUES ('1', 'fl3L2KQL1503751377', '1503751377');
-INSERT INTO `share_token` VALUES ('1', 'iscwlTPu1503751828', '1503751829');
-INSERT INTO `share_token` VALUES ('1', 'yeAoHAvH1503752129', '1503752130');
-INSERT INTO `share_token` VALUES ('1', '3Ox7LXTc1503753277', '1503753278');
-INSERT INTO `share_token` VALUES ('1', 'z3LgQdhm1503802099', '1503802100');
-INSERT INTO `share_token` VALUES ('1', 'kbDduj7i1503802442', '1503802444');
-INSERT INTO `share_token` VALUES ('1', 'OpYl86Qx1503802529', '1503802530');
-INSERT INTO `share_token` VALUES ('1', '74pzH5P21503802683', '1503802684');
-INSERT INTO `share_token` VALUES ('1', 'rkjqp9ic1503802987', '1503802988');
-INSERT INTO `share_token` VALUES ('1', 'KsSee3KD1503803059', '1503803060');
-INSERT INTO `share_token` VALUES ('1', 'Kk0guxhQ1503803413', '1503803414');
-INSERT INTO `share_token` VALUES ('1', 'XxtxypvY1503803622', '1503803624');
-INSERT INTO `share_token` VALUES ('1', 'FiDuKr4D1503803753', '1503803754');
-INSERT INTO `share_token` VALUES ('1', 'txEh3XWY1503804009', '1503804011');
-INSERT INTO `share_token` VALUES ('1', 'XZkUio881503806552', '1503806553');
-INSERT INTO `share_token` VALUES ('1', 'Is3KxXwA1503806736', '1503806737');
-INSERT INTO `share_token` VALUES ('1', 'ol6PfUEl1503806825', '1503806826');
-INSERT INTO `share_token` VALUES ('1', 'j5d3UorZ1503806947', '1503806950');
-INSERT INTO `share_token` VALUES ('1', 'HFRgelRZ1503807155', '1503807156');
-INSERT INTO `share_token` VALUES ('1', 'dnTYW1Ur1503807195', '1503807196');
-INSERT INTO `share_token` VALUES ('1', 'T4eWIn0c1503807245', '1503807246');
-INSERT INTO `share_token` VALUES ('1', 'cZXXu3Tm1503807943', '1503807944');
-INSERT INTO `share_token` VALUES ('1', 'aTyo4q9J1503808311', '1503808312');
-INSERT INTO `share_token` VALUES ('1', 'pYnHmOUf1503808329', '1503808330');
-INSERT INTO `share_token` VALUES ('1', 'EoqrHFXb1503808712', '1503808713');
-INSERT INTO `share_token` VALUES ('1', '5iP0mqWq1503808811', '1503808812');
-INSERT INTO `share_token` VALUES ('1', 'ofqsclhL1503808932', '1503808933');
-INSERT INTO `share_token` VALUES ('1', '0d5Wjv9E1503809006', '1503809007');
-INSERT INTO `share_token` VALUES ('1', 'iZrY57l41503809189', '1503809190');
-INSERT INTO `share_token` VALUES ('1', 'vKha9HrG1503809234', '1503809235');
-INSERT INTO `share_token` VALUES ('1', 'W1gugT8G1503809349', '1503809350');
-INSERT INTO `share_token` VALUES ('1', 'oKJuReJP1503809510', '1503809511');
-INSERT INTO `share_token` VALUES ('1', 'olT6Qrad1503809554', '1503809555');
-INSERT INTO `share_token` VALUES ('1', 'gglg4zwg1503809740', '1503809741');
-INSERT INTO `share_token` VALUES ('1', 'aj46ROwW1503811313', '1503811314');
-INSERT INTO `share_token` VALUES ('1', 'Gs0AyO5P1503811744', '1503811745');
-INSERT INTO `share_token` VALUES ('1', 'UHxibrnm1503811830', '1503811836');
-INSERT INTO `share_token` VALUES ('1', 'EPHdpXxG1503812037', '1503812038');
-INSERT INTO `share_token` VALUES ('1', 'hA5OiTmu1503812485', '1503812486');
-INSERT INTO `share_token` VALUES ('1', 'Q6HjnOFs1503841400', '1503841401');
-INSERT INTO `share_token` VALUES ('1', 'PHdKyOa91503841585', '1503841586');
-INSERT INTO `share_token` VALUES ('1', 'T38f7LkO1503841750', '1503841751');
-INSERT INTO `share_token` VALUES ('1', '8wAQD4J11503842425', '1503843047');
-INSERT INTO `share_token` VALUES ('1', 'DkpiwEE41503847989', '1503847991');
-INSERT INTO `share_token` VALUES ('1', 'gHK8sP7s1503848302', '1503848303');
-INSERT INTO `share_token` VALUES ('1', '64Wj0hHS1503848607', '1503848608');
-INSERT INTO `share_token` VALUES ('1', 'E9RgwHsI1503848688', '1503848689');
-INSERT INTO `share_token` VALUES ('1', 'HHSIuHoJ1503849056', '1503849057');
-INSERT INTO `share_token` VALUES ('1', 'z6Ow9wl51503850047', '1503850101');
-INSERT INTO `share_token` VALUES ('1', 'yjozzbmX1503850273', '1503850274');
-INSERT INTO `share_token` VALUES ('1', 'LOwh0Ihs1503850360', '1503850361');
-INSERT INTO `share_token` VALUES ('1', 'tIqIDkU21503850423', '1503850424');
-INSERT INTO `share_token` VALUES ('1', 'Z0X0yzrW1503850465', '1503850466');
-INSERT INTO `share_token` VALUES ('1', 'DIshrnT21503850492', '1503850493');
-INSERT INTO `share_token` VALUES ('1', 'nt7pkkHH1503850539', '1503850540');
-INSERT INTO `share_token` VALUES ('1', '1jHmIKxX1503850572', '1503850573');
+INSERT INTO `share_token` VALUES ('1', 'tgg1dyA01504245559', '1504246395');
+INSERT INTO `share_token` VALUES ('1', 'ZTXlHAn51504246519', '1504246520');
+INSERT INTO `share_token` VALUES ('1', 'n1EKljFw1504442904', '1504442904');
+INSERT INTO `share_token` VALUES ('1', 'UkdjAoRb1504447379', '1504447379');
+INSERT INTO `share_token` VALUES ('1', 'uiGhsrzg1504447379', '1504447650');
+INSERT INTO `share_token` VALUES ('1', 'uwDt015x1504449100', '1504494618');
+INSERT INTO `share_token` VALUES ('1', '3excqnUW1504451061', '1504451061');
+INSERT INTO `share_token` VALUES ('1', 'JpkDzk481504497557', '1504497715');
+INSERT INTO `share_token` VALUES ('1', 'hqwIk0eX1504541035', '1504541035');
+INSERT INTO `share_token` VALUES ('1', 'POwfpqil1504544814', '1504613177');
+INSERT INTO `share_token` VALUES ('1', 'bg7ksupR1504613193', '1504630864');
+INSERT INTO `share_token` VALUES ('1', 'Fbp2zcsg1504692209', '1504692279');
 
 -- ----------------------------
 -- Table structure for share_user
@@ -308,16 +322,18 @@ CREATE TABLE `share_user` (
   `reg_time` int(11) NOT NULL,
   `money` float(11,2) NOT NULL DEFAULT '0.00',
   PRIMARY KEY (`uid`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
 
 -- ----------------------------
 -- Records of share_user
 -- ----------------------------
-INSERT INTO `share_user` VALUES ('1', 'Farmer', 'qwe123', 'code.farmer@qq.com', '1500692842', '0.00');
+INSERT INTO `share_user` VALUES ('1', 'Farmer', 'zouqin123', 'code.farmer@qq.com', '1500692842', '816.21');
 INSERT INTO `share_user` VALUES ('2', 'admin', '123456789', 'test@qq.com', '1500994558', '0.00');
 INSERT INTO `share_user` VALUES ('3', 'qwe123', 'qwe123', 'qqq@qq.com', '1503843239', '0.00');
 INSERT INTO `share_user` VALUES ('6', 'qwe1234', 'qwe123', 'qq3q@qq.com', '1503847986', '0.00');
 INSERT INTO `share_user` VALUES ('7', 'qwe123523', 'qwe123', 'dsfw3@qq.com', '1503848004', '0.00');
+INSERT INTO `share_user` VALUES ('8', 'woceshi', 'qwe123', 'sdsdgv@qq.com', '1504434410', '0.00');
+INSERT INTO `share_user` VALUES ('9', 'wrewer', 'qwe123', 'vsdf@qq.com', '1504444335', '0.00');
 
 -- ----------------------------
 -- Table structure for share_usergroup
@@ -336,11 +352,17 @@ CREATE TABLE `share_usergroup` (
 -- ----------------------------
 -- Records of share_usergroup
 -- ----------------------------
-INSERT INTO `share_usergroup` VALUES ('1', '4', '-1');
 INSERT INTO `share_usergroup` VALUES ('2', '4', '-1');
 INSERT INTO `share_usergroup` VALUES ('3', '1', '-1');
 INSERT INTO `share_usergroup` VALUES ('6', '1', '-1');
 INSERT INTO `share_usergroup` VALUES ('7', '1', '-1');
+INSERT INTO `share_usergroup` VALUES ('8', '1', '-1');
+INSERT INTO `share_usergroup` VALUES ('9', '1', '-1');
+INSERT INTO `share_usergroup` VALUES ('3', '2', '-1');
+INSERT INTO `share_usergroup` VALUES ('1', '4', '-1');
+INSERT INTO `share_usergroup` VALUES ('1', '3', '-1');
+INSERT INTO `share_usergroup` VALUES ('1', '1', '-1');
+INSERT INTO `share_usergroup` VALUES ('1', '5', '-1');
 
 -- ----------------------------
 -- Table structure for share_video

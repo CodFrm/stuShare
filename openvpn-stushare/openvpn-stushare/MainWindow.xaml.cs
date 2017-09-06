@@ -198,20 +198,27 @@ namespace openvpn_stushare
         {
             if (mIsRun)
             {
-                addMsg("正在呢");
+                if (mIsSuccess)
+                {
+                    addMsg("连接成功了");
+                }
+                else
+                {
+                    addMsg("正在呢");
+                }
                 return;
             }
             mIsRun = true;
             mIsSuccess = false;
             try
             {
+                Functions.KillProcess("openvpn");
                 setState("vpn_wait");
-                Functions.WriteFile("pass.txt", Functions.User + "\r\n" + Functions.Pwd + "\r\n");
-                mConfig = mConfig.Replace("auth-user-pass", "auth-user-pass pass.txt");
-                Functions.WriteFile("tmp.ovpn", mConfig);
+                string strAppPath = System.Windows.Forms.Application.StartupPath;
+                Functions.WriteFile(strAppPath+"\\tmp.ovpn", mConfig);
                 openVpn = new Process();
                 openVpn.StartInfo.FileName = getOvpnPath();
-                openVpn.StartInfo.Arguments = "--config tmp.ovpn";
+                openVpn.StartInfo.Arguments = "--config \""+ strAppPath + "\\tmp.ovpn\"";
                 openVpn.StartInfo.UseShellExecute = false;
                 openVpn.StartInfo.RedirectStandardOutput = true;
                 openVpn.StartInfo.RedirectStandardInput = true;
@@ -220,9 +227,11 @@ namespace openvpn_stushare
                 openVpn.Start();
                 openVpn.Exited += OpenVpn_Exited;
                 openVpn.BeginOutputReadLine();
-                Thread.Sleep(1000);
-                Functions.DeleteFile("tmp.ovpn");
-                Functions.DeleteFile("pass.txt");
+                Thread.Sleep(500);
+                openVpn.StandardInput.WriteLine(Functions.User);
+                Thread.Sleep(500);
+                openVpn.StandardInput.WriteLine(Functions.Pwd);
+                Functions.DeleteFile(strAppPath+"\\tmp.ovpn");
                 int timer = 0;
                 while (mIsRun)
                 {
@@ -337,6 +346,7 @@ namespace openvpn_stushare
                     if (e.Data.ToString().IndexOf("auth-failure") >= 0)
                     {
                         addMsg("你的账号已经过期或者并未开通,请前往官网开通------>" + Functions.URL + "/user/money/vip");
+                        setState("vpn");
                     }
                     else if (e.Data.ToString().IndexOf("succeeded") >= 0)
                     {

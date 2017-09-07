@@ -45,6 +45,7 @@ def fetchone(sql, param):
     try:
         cursor.execute(sql, param)
         result = cursor.fetchone()
+        db.commit()
     except:
         result = []
         print 'DB ERROR sql:' + sql
@@ -57,6 +58,7 @@ def query(sql, param):
     cursor = db.cursor()
     try:
         cursor.execute(sql, param)
+        db.commit()
     except:
         result = []
         print 'DB ERROR sql:' + sql
@@ -125,17 +127,21 @@ class STRadius():
                     userMsg = STRadius.gUser(
                         AuthDict['User-Name'])
                     if userMsg != False:
-                        execute('insert into ' + DB_PREFIX +
-                                'accounting(`uid`,`login_time`,`nas_ip`,`allot_ip`,`session_id`)' +
-                                ' values(%s,%s,%s,%s,%s)', (str(userMsg[0]), str(time.time()), AuthDict['NAS-ip'],
-                                                            AuthDict['Framed-IP'], AuthDict['Acct-Session-Id']))
-                        row=fetchone('select * from '+DB_PREFIX+'usergroup as a join '+DB_PREFIX+
-                                     'set_meal as b on a.group_id=b.group_id'+
-                                     ' where uid=%s',[str(userMsg[0])])
-                        sendJson={}
-                        sendJson['width']=row[5]
-                        sendJson['ip']=AuthDict['Framed-IP']
-                        ctrl.sendto(json.dumps(sendJson),(AuthDict['NAS-ip'],1364))
+                        try:
+                            execute('insert into ' + DB_PREFIX +
+                                    'accounting(`uid`,`login_time`,`nas_ip`,`allot_ip`,`session_id`)' +
+                                    ' values(%s,%s,%s,%s,%s)', (str(userMsg[0]), str(time.time()), AuthDict['NAS-ip'],
+                                    AuthDict['Framed-IP'], AuthDict['Acct-Session-Id']))
+                            row=fetchone('select * from '+DB_PREFIX+'usergroup as a join '+DB_PREFIX+
+                                         'set_meal as b on a.group_id=b.group_id'+
+                                         ' where uid=%s',[str(userMsg[0])])
+                            sendJson={}
+                            sendJson['width']=row[5]
+                            sendJson['ip']=AuthDict['Framed-IP']
+                            ctrl.sendto(json.dumps(sendJson),(AuthDict['NAS-ip'],1364))
+                        except :
+                            print '权限错误'
+                       
                     print '开始计费'
 
                 elif AuthDict['Acct-Status-Type'] == '\x02':

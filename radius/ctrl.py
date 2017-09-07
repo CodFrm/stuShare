@@ -40,11 +40,16 @@ def flowCtrl(ip,down):
     number=ip[ip.rfind(".")+1:]
     exec_shell("tc class replace dev "+ODEV+" parent 10:1 classid 10:2"+number+" htb rate "+MUPLOAD+" ceil "+MUPLOAD+" prio 1")
     exec_shell("tc qdisc replace dev "+ODEV+" parent 10:2"+number+" handle 100"+number+": pfifo")
-    exec_shell("tc filter replace dev "+ODEV+" parent 10: protocol ip prio 100 u32 match ip dst "+ip+"/32 flowid 10:2"+number)
+    exec_shell("tc filter replace dev "+ODEV+" parent 10: protocol ip prio 100 handle 2"+number+" fw classid 10:2"+number)
     # tc filter add dev $IDEV parent 10: protocol ip prio 1 u32 match ip dst $INET$i/32 flowid 10:2$i
     exec_shell("tc class replace dev "+IDEV+" parent 10:1 classid 10:2"+number+" htb rate "+down+"mbit ceil "+down+"mbit prio 1")
     exec_shell("tc qdisc replace dev "+IDEV+" parent 10:2"+number+" handle 100"+number+": pfifo")
-    exec_shell("tc filter replace dev "+IDEV+" parent 10: protocol ip prio 100 u32 match ip dst "+ip+"/32 flowid 10:2"+number)
+    exec_shell("tc filter replace dev "+IDEV+" parent 10: protocol ip prio 100 handle 2"+number+" fw classid 10:2"+number)
+    exec_shell("iptables -t mangle -A PREROUTING -s "+ip+" -j MARK --set-mark 2"+number)
+    exec_shell("iptables -t mangle -A PREROUTING -s "+ip+" -j RETURN")
+    exec_shell("iptables -t mangle -A POSTROUTING -d "+ip+" -j MARK --set-mark 2"+number)
+    exec_shell("iptables -t mangle -A POSTROUTING -d "+ip+" -j RETURN")
+
 
 def ctrl():
     flow = socket(AF_INET, SOCK_DGRAM) 

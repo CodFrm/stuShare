@@ -56,7 +56,9 @@ body:before {
 
 .content {
     position: absolute;
-    height: 100%;
+    position: absolute;
+    top: 50px;
+    bottom: 60px;
     width: 100%;
 }
 
@@ -67,7 +69,7 @@ body:before {
 
 .user-msg {
     overflow-x: auto;
-    max-height: 85%;
+    max-height: 100%;
     width: auto;
     margin: 4px;
     min-height: 30%;

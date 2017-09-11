@@ -4,6 +4,7 @@ from socket import socket, AF_INET, SOCK_DGRAM
 import json
 import os
 import threading
+import time
 # 控制服务器ip
 serverIP=""
 #  定义进出设备(eth0 内网，eth1外网)
@@ -58,8 +59,8 @@ def ctrl():
         data, addr = flow.recvfrom(1024)
         print data
         try:
-             row=json.loads(data)
-             flowCtrl(row['ip'],row['width'])
+            row=json.loads(data)
+            flowCtrl(row['ip'],row['width'])
         except:
             print "json error:"+data       
 

@@ -75,7 +75,7 @@ class api extends auth {
      * @author Farmer
      */
     public function getauth() {
-        $ret = ['code' => 0, 'msg' => 'success'];
+        $ret = ['code' => 0, 'msg' => 'success','user'=>$this->userMsg['user']];
         $ret['rows'] = $this->userMsg['group'];
         return json($ret);
     }
@@ -90,6 +90,9 @@ class api extends auth {
             $type = $_POST['type'];
         } else {
             $type = 0;
+        }
+        if($type!=1 or $type!=2){
+            return '';
         }
         $retJson['msg'] = $ret;
         if ($ret === true) {

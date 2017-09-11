@@ -18,8 +18,8 @@ class api {
      * @author Farmer
      */
     public function update_m() {
-        $ret['v'] = config('movie_app_update_v');
-        $ret['u'] = config('movie_app_update_u');
+        $ret['v'] = config('movie_update_v');
+        $ret['u'] = config('movie_update_u');
         return json($ret);
     }
 

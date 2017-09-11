@@ -1,0 +1,97 @@
+{include 'public/header'}
+<!-- 内容区域 -->
+<div class="tpl-content-wrapper">
+    <div class="row-content am-cf">
+        <div class="row">
+            <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                <div class="widget am-cf">
+                    <div class="widget-head am-cf">
+                        <div class="widget-title  am-cf">{$title}</div>
+                    </div>
+                    <div class="widget-body am-fr">
+
+                        <div class="am-u-sm-12 am-u-md-12 am-u-lg-3" style="float:right;">
+                            <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
+                                <input type="text" class="am-form-field ">
+                                <span class="am-input-group-btn">
+            <button class="am-btn  am-btn-default am-btn-success tpl-table-list-field am-icon-search"
+                    type="button"></button>
+          </span>
+                            </div>
+                        </div>
+
+                        <div class="am-u-sm-12">
+                            <table width="100%" class="am-table am-table-compact am-table-striped tpl-table-black ">
+                                <thead>
+                                <tr>
+                                    <th>用户名</th>
+                                    <th>联系方式</th>
+                                    <th width="400px">内容</th>
+                                    <th width="150px">提交时间</th>
+                                    <th>类型</th>
+                                    <th width="100px">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {foreach $feed_list as $item}
+                                <tr class="gradeX">
+                                    <td>{$item['user']}</td>
+                                    <td>{$item['contact']}</td>
+                                    <td>{$item['msg']}</td>
+                                    <td>{:date('Y/m/d H:i:s',$item['time'])}</td>
+                                    <td>{:feedType($item['type'])}</td>
+                                    <td>
+                                        <div class="tpl-table-black-operation">
+                                            <a href="{:url('admin/user/look','time='.$item['time'].'&uid='.$item['uid'])}"
+                                               class="tpl-table-black-operation">
+                                                <i class="am-icon-check"></i> 朕已阅
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {/foreach}
+                                <!-- more data -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="am-u-lg-12 am-cf">
+
+                            <div class="am-fr">
+                                <ul class="am-pagination tpl-pagination">
+                                    {if $page!=1}
+                                    <li><a href="{:url('admin/user/index','page='.($page-1))}">«</a></li>
+                                    {/if}
+                                    {if $page<4}
+                                    {while ++$i<=8}
+                                    <li
+                                    {if $page==$i} class="am-active"{/if}><a
+                                        href="{:url('admin/user/index','page='.$i)}">{$i}</a></li>
+                                    {/while}
+                                    {elseif $page>=$pageAll-4}
+                                    <?php $i=$pageAll-8;?>
+                                    {while ++$i<=$pageAll}
+                                    <li
+                                    {if $page==$i} class="am-active"{/if}><a
+                                        href="{:url('admin/user/index','page='.$i)}">{$i}</a></li>
+                                    {/while}
+                                    {else}
+                                    <?php $i=$page-4;?>
+                                    {while ++$i<=$page+4}
+                                    <li
+                                    {if $page==$i} class="am-active"{/if}><a
+                                        href="{:url('admin/user/index','page='.$i)}">{$i}</a></li>
+                                    {/while}
+                                    {/if}
+                                    {if $page!=$pageAll}
+                                    <li><a href="{:url('admin/user/index','page='.($page+1))}">»</a></li>
+                                    {/if}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    {include 'public/footer'}

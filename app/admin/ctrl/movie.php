@@ -15,12 +15,13 @@ use app\common\ctrl\auth;
 
 class movie extends auth {
     public function index($page = 1) {
+        $total=50;
         V()->assign('title', '影视管理');
-        $rec = DB('video as a|user as b')->select(['a.uid=b.uid', 'father_vid' => -1,'__order by'=>'status,vid desc', '__limit' => (($page - 1) * 10) . ',10']);
+        $rec = DB('video as a|user as b')->select(['a.uid=b.uid', 'father_vid' => -1,'__order by'=>'status,vid desc', '__limit' => (($page - 1) * $total) . ','.$total]);
         $movie_list = $rec->fetchAll();
         $count=DB('video')->find(['father_vid' => -1],'count(*)')['count(*)'];
         V()->assign('page',$page);
-        V()->assign('pageAll',ceil($count/10));
+        V()->assign('pageAll',ceil($count/$total));
         V()->assign('movie_list', $movie_list);
         V()->display();
     }

@@ -24,11 +24,28 @@
             </a>
         </li>
         <li class="sidebar-nav-link">
-            <a href="{:url('admin/user/index')}" class="{if $ctrl=='user'}active
+            <a href="javascript:;" class="sidebar-nav-sub-title {if $ctrl=='user'}active
             {/if}">
-                <i class="am-icon-user sidebar-nav-link-logo"></i> 用户管理
+                <i class="am-icon-cog sidebar-nav-link-logo"></i> 用户管理
+                {if $action=='user'}
+                <span class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico sidebar-nav-sub-ico-rotate"></span>
+                {else}
+                <span class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
+                {/if}
+            </a>
+            <ul class="sidebar-nav sidebar-nav-sub" {if $ctrl=='user'}style="display: block;"{/if}>
+        <li class="sidebar-nav-link">
+            <a href="{:url('admin/user/index')}" {if $ctrl=='user' and $action=='index'}class="sub-active"{/if}>
+                <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 用户列表
             </a>
         </li>
+        <li class="sidebar-nav-link">
+            <a href="{:url('admin/user/feedback')}" {if $action=='feedback'}class="sub-active"{/if}>
+                <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 用户反馈
+            </a>
+        </li>
+    </ul>
+    </li>
         <li class="sidebar-nav-link">
             <a href="{:url('admin/server/index')}" class="{if $ctrl=='server'}active
             {/if}">
@@ -53,7 +70,7 @@
             </a>
             <ul class="sidebar-nav sidebar-nav-sub" {if $ctrl=='setting'}style="display: block;"{/if}>
         <li class="sidebar-nav-link">
-            <a href="{:url('admin/setting/notice')}">
+            <a href="{:url('admin/setting/notice')}" {if $action=='notice'}class="sub-active"{/if}>
                 <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 通知设置
             </a>
         </li>
@@ -63,7 +80,6 @@
                     </a>
                 </li>
             </ul>
-
         </li>
         <li class="sidebar-nav-link">
             <a href="{:url('admin/index/logout')}" class="{if $action=='logout'}active

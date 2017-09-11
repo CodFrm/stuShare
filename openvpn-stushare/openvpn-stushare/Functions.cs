@@ -12,7 +12,8 @@ namespace openvpn_stushare
 {
     class Functions
     {
-        public static float Version = 0.1F;
+        public static float Version = 0.2F;
+        internal static string version = "v0.2";
         /// <summary>
         /// 写操作
         /// </summary>
@@ -75,7 +76,7 @@ namespace openvpn_stushare
             
         }
         public static string URL = "http://sv.icodef.com";
-        internal static string version = "v0.1";
+
         private static CookieContainer cookie = new CookieContainer();
 
         public static string User { get; internal set; }

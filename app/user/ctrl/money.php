@@ -88,6 +88,7 @@ class money extends auth {
                             }
                             DB('usergroup')->update(['group_id' => $group_id, 'expire_time' => $extime], ['uid' => $_COOKIE['uid'], 'group_id' => $oldSm['group_id']]);
                         } else {
+                            $extime = time() + $newTime;
                             DB('usergroup')->insert(['uid' => $_COOKIE['uid'], 'group_id' => $group_id,
                                 'expire_time' => (time() + $newTime)]);
                         }

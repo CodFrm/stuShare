@@ -68,7 +68,7 @@ class movie extends auth {
         $apiUrl = 'http://video.visha.cc/';//接口域名
         $domain = 'http://127.0.0.1/video';//你的域名
         $do = input('get.do');
-        $v = input('v');
+        $v = input('get.v');
         header('Content-type:text/json');
         $apiUrl .= '?action=api&url=' . $url . '&key=' . $key . ($v !== '0' ? ('&v=' . $v) : '');
         echo file_get_contents($apiUrl);

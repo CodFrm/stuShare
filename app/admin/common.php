@@ -7,3 +7,13 @@
  * function:
  *============================
  */
+
+function feedType($type){
+    $ret='';
+    if(abs($type)==1){
+        $ret= '网络';
+    }else if(abs($type)==2){
+        $ret= '影视';
+    }
+    return $ret.($type<=0?'(已阅)':'');
+}

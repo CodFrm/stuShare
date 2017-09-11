@@ -1,0 +1,107 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+header {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 100;
+}
+
+header > img {
+    height: 25px;
+    display: block;
+    float: left;
+}
+
+.content {
+    padding-top: 23%;
+    width: 100%;
+    text-align: center;
+}
+
+.page1 .bg {
+    background: url(../image/sw.jpg) no-repeat center bottom;
+}
+
+.page2 .bg {
+    background: url(../image/m_bg2.jpg) no-repeat center bottom;
+}
+
+.page3 .bg {
+    background: url(../image/bg3.jpg) no-repeat center bottom;
+}
+
+.page1 .bg,
+.page2 .bg,
+.page3 .bg {
+    background-size: cover;
+    -webkit-filter: blur(3px);
+    -moz-filter: blur(3px);
+    -ms-filter: blur(3px);
+    filter: blur(3px);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.content > .title,
+.content > .p1 {
+    margin: 0;
+    color: #ffffff;
+    width: 100%;
+    font-family: "Microsoft Yahei";
+}
+a.p1{
+    text-decoration: none;
+    display: inline-block;
+}
+.btn, .down {
+    border: 0;
+    outline: none;
+    cursor: pointer;
+    color: #ffffff;
+}
+
+.btn {
+    margin-top: 40%;
+    background: linear-gradient(to right, #0099CC, #2077aa);
+    min-width: 150px;
+    padding: 6px 4px;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.down, .top {
+    margin-top: 25%;
+    background: rgba(0, 0, 0, 0);
+    width: 25px;
+    height: 25px;
+}
+
+@media screen and (max-width: 360px) and (max-height: 540px) {
+    .btn {
+        margin-top: 20%;
+    }
+
+    .down,
+    .top {
+        margin-top: 15%;
+    }
+}
+
+@media screen and (min-width: 900px) and (min-height: 700px) {
+    .btn {
+        margin-top: 5%;
+    }
+
+    .down,
+    .top {
+        margin-top: 5%;
+    }
+}

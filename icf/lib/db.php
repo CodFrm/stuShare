@@ -148,16 +148,16 @@ class db {
     public function insert($data = 0) {
         if (!empty ($data)) {
             $table = $this->table;
-            $param=[];
+            $param = [];
             $sql = 'insert into ' . $table . '(`' . implode('`,`', array_keys($data)) . '`) values(';
-            foreach($data as $value){
-                $sql.='?,';
-                $param[]=$value;
+            foreach ($data as $value) {
+                $sql .= '?,';
+                $param[] = $value;
             }
-            $sql=substr($sql,0,strlen($sql)-1);
-            $sql.=')';
+            $sql = substr($sql, 0, strlen($sql) - 1);
+            $sql .= ')';
             $result = db::$db->prepare($sql);
-            if ($count=$result->execute($param)) {
+            if ($count = $result->execute($param)) {
                 return $result->rowCount();
             }
             return false;
@@ -174,14 +174,14 @@ class db {
      */
     public function delete($where = 0) {
         $sql = "delete from $this->table";
-        $param=[];
+        $param = [];
         if (is_string($where)) {
             $sql .= $where;
         } else if (is_array($where) and !empty($where)) {
-            $sql .= $this->where($where,$param);
+            $sql .= $this->where($where, $param);
         }
         $result = db::$db->prepare($sql);
-        if ($count=$result->execute($param)) {
+        if ($count = $result->execute($param)) {
             return $result->rowCount();
         }
         return false;
@@ -197,7 +197,7 @@ class db {
      */
     function update($data, $where = 0) {
         $sql = "update $this->table set ";
-        $param=[];
+        $param = [];
         if (is_string($data)) {
             $sql .= $data;
         } else if (is_array($data)) {
@@ -206,15 +206,15 @@ class db {
                 if (is_numeric($key)) {
                     $sql .= ($add++ != 0 ? ',' : '') . $value;
                 } else {
-                    $sql .= ($add++ != 0 ? ',' : '') . $key . '= ? ' ;
-                    $param[]=$value;
+                    $sql .= ($add++ != 0 ? ',' : '') . $key . '= ? ';
+                    $param[] = $value;
                 }
             }
         }
         if (is_string($where)) {
             $sql .= $where;
         } else if (is_array($where)) {
-            $sql .= $this->where($where,$param);
+            $sql .= $this->where($where, $param);
         }
         $result = db::$db->prepare($sql);
         if ($result->execute($param)) {
@@ -233,6 +233,7 @@ class db {
      */
     function select($where = 0, $field = 0, $join = '') {
         $sql = 'select ' . (empty($field) ? '*' : $field);
+        $join = str_replace(':', input('config.DB_PREFIX'), $join);
         $sql .= " from $this->table $join";
         $param = [];
         if (is_string($where)) {

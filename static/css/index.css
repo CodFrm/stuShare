@@ -76,7 +76,9 @@ a.p1{
     font-weight: bold;
     font-size: 18px;
 }
-
+.download{
+    margin-top: 30%;
+}
 .down, .top {
     margin-top: 25%;
     background: rgba(0, 0, 0, 0);
@@ -87,6 +89,9 @@ a.p1{
 @media screen and (max-width: 360px) and (max-height: 540px) {
     .btn {
         margin-top: 20%;
+    }
+    .download{
+        margin-top: 10%;
     }
 
     .down,

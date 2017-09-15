@@ -212,26 +212,42 @@ namespace openvpn_stushare
             mIsSuccess = false;
             try
             {
+                string tmpStr = Functions.ReadIni("openvpn", "model") ;
+                int model = int.Parse(tmpStr==""?"0":tmpStr);
                 Functions.KillProcess("openvpn");
                 setState("vpn_wait");
                 string strAppPath = System.Windows.Forms.Application.StartupPath;
-                Functions.WriteFile(strAppPath+"\\tmp.ovpn", mConfig);
+                if (model == 0)
+                {
+                    Functions.WriteFile(strAppPath + "\\pass.txt", Functions.User + "\r\n" + Functions.Pwd + "\r\n");
+                    mConfig = mConfig.Replace("auth-user-pass", "auth-user-pass pass.txt");
+                }
+                Functions.WriteFile(strAppPath + "\\tmp.ovpn", mConfig);
+
                 openVpn = new Process();
                 openVpn.StartInfo.FileName = getOvpnPath();
-                openVpn.StartInfo.Arguments = "--config \""+ strAppPath + "\\tmp.ovpn\"";
+                openVpn.StartInfo.Arguments = "--config \"" + strAppPath + "\\tmp.ovpn\"";
                 openVpn.StartInfo.UseShellExecute = false;
                 openVpn.StartInfo.RedirectStandardOutput = true;
                 openVpn.StartInfo.RedirectStandardInput = true;
                 openVpn.StartInfo.CreateNoWindow = true;
                 openVpn.OutputDataReceived += new DataReceivedEventHandler(process_OutputDataReceived);
-                openVpn.Start();
                 openVpn.Exited += OpenVpn_Exited;
+                openVpn.Start();
                 openVpn.BeginOutputReadLine();
-                Thread.Sleep(500);
-                openVpn.StandardInput.WriteLine(Functions.User);
-                Thread.Sleep(500);
-                openVpn.StandardInput.WriteLine(Functions.Pwd);
-                Functions.DeleteFile(strAppPath+"\\tmp.ovpn");
+                if (model == 1)
+                {
+                    Thread.Sleep(500);
+                    openVpn.StandardInput.WriteLine(Functions.User);
+                    Thread.Sleep(500);
+                    openVpn.StandardInput.WriteLine(Functions.Pwd);
+                }
+                else if (model == 0)
+                {
+                    Thread.Sleep(1000);
+                    Functions.DeleteFile(strAppPath + "\\pass.txt");
+                }
+                Functions.DeleteFile(strAppPath + "\\tmp.ovpn");
                 int timer = 0;
                 while (mIsRun)
                 {
@@ -327,6 +343,7 @@ namespace openvpn_stushare
                 RegistryKey Keys = localMachine.OpenSubKey("SOFTWARE\\OpenVPN");
                 string path = "";
                 path = Keys.GetValue("exe_path", "").ToString();
+                addMsg(path);
                 return path;
             }
             catch (Exception)
@@ -346,6 +363,13 @@ namespace openvpn_stushare
                     if (e.Data.ToString().IndexOf("auth-failure") >= 0)
                     {
                         addMsg("你的账号已经过期或者并未开通,请前往官网开通------>" + Functions.URL + "/user/money/vip");
+                        mIsRun = false;
+                        setState("vpn");
+                    }
+                    else if (e.Data.ToString().IndexOf("Exiting due to fatal error") >= 0)
+                    {
+                        addMsg("软件错误,请反馈错误日志");
+                        mIsRun = false;
                         setState("vpn");
                     }
                     else if (e.Data.ToString().IndexOf("succeeded") >= 0)
@@ -356,6 +380,20 @@ namespace openvpn_stushare
                             setState("vpn_success");
                         }
                         mIsSuccess = true;
+                    }
+                    else if (e.Data.ToString().IndexOf("WARNING: cannot stat file 'pass.txt':") >= 0)
+                    {
+                        Functions.WriteIni("openvpn", "model", "1");
+                        openVpn.Close();
+                        mIsRun = false;
+                        addMsg("启动失败,更换启动模式,请再重新点击连接");
+                    }
+                    else if (e.Data.ToString().IndexOf("Failed retrieving username or password") >= 0)
+                    {
+                        Functions.WriteIni("openvpn", "model", "0");
+                        openVpn.Close();
+                        mIsRun = false;
+                        addMsg("启动失败,更换启动模式,请再重新点击连接");
                     }
 
                 }

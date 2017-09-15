@@ -23,17 +23,16 @@ req = urllib2.Request('https://my.alipay.com/portal/i.htm', data=None, headers={
 })
 res = opear.open(req,timeout=10)
 data = res.read()
-print data
 f = open('var.html', 'w')
 f.write(data)
 f.close()
-
 def dealOrder(html):
-    orderList = re.findall('bizInNo=(.*?)&createDate[\S\s]+?<p class="memo-info">(.*?)</p>[\S\s]+?<span class="amount-pay">(.*?) (.*?)</span>',html)
-        # '<span class="amount-pay">\+ (.*?)</span>[\s]*?</td>[\s]*?<td class="detail">[\s]*?<div class="icon-group">[\s]*?<a class=".*?[\s]*?.*?</a>[\s]*?<span class="record-icon icon-memo " data-info="(.*?)" data-type="memo" data-bizId="biz(.*?)"', html)
-    print orderList
+    orderList = re.findall('<td class="time">([\s\S]*?)</tr>',html)
     for arr in orderList:
-        if arr.count >= 3:
+        arr=re.findall('bizInNo=(.*?)&createDate[\S\s]+?<p class="memo-info">(.*?)</p>[\S\s]+?<span class="amount-pay">(.*?) (.*?)</span>', arr)
+        if arr!=[]:
+            arr=arr[0]
+            print arr
             if arr[2]=='+':
                 print GetHttp('http://127.0.0.1/stushare/user/money/pay_call?order=' +
                         arr[0] + '&money=' + arr[3] + '&remarks=' + arr[1])
@@ -48,7 +47,8 @@ def GetHttp(url):
         req = urllib2.Request(url, data=None, headers={
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
-            'Accept-Language': 'zh-CN,zh;q=0.8,en-US;q=0.6,en;q=0.4'})
+            'Accept-Language': 'zh-CN,zh;q=0.8,en-US;q=0.6,en;q=0.4',
+            'Cookie': cookieFile})
         res = opear.open(req,timeout=10)
         data = res.read()
     except:

@@ -39,6 +39,76 @@ class money extends auth {
             }
             echo $ret;
         }
+        //定时计划,执行邮件发送
+        if (config('email') < time() - 3600) {
+            set_time_limit(0);
+            ignore_user_abort(true);
+            config('email', time());
+            //检查到期 7天 3天 1天 over
+//            $this->check_expire(time() + 604800, time() + 259200, 7);
+            $this->check_expire(time() + 259100, time(), 3);
+//            $this->check_expire(time() + 86300, time(), 1);
+        }
+    }
+
+    private function check_expire($expire_time, $range, $day) {
+        $rec = DB('usergroup as a')->select(['expire_time' => [$expire_time, '<'], 'expire_time!=-1 and expire_time>' . $range], '*',
+            'join :group as b on a.group_id=b.group_id join :user as c on a.uid=c.uid join :set_meal as d on d.group_id=b.group_id');
+        $rows = $rec->fetchAll();
+        foreach ($rows as $item) {
+            if ($this->isSend($item['uid'], time() - $day * 86400, $day)) {
+                sendEmail($item['email'], '到期通知 - 信院小站',
+                    "<body style=\"margin:0;\">
+<div style=\"width:100%;height:100%;min-height:600px;\">
+    <img src=\"http://s.icodef.com/static/image/email_bg.jpg\" style=\"width:100%;height:100%;position: absolute;z-index: -1;\">
+    <div style=\"color: rgba(255, 0, 0, 1);margin-left: 15%;width: 70%;padding:20px\">
+        <div style=\"padding:10px;background: rgba(160, 160, 160, 0.5);border-radius: 5px;\">
+                <h2>您的账号还有{$day}天到期</h2><br/>到期时间:" . date("Y/m/d H:i:s", $item['expire_time']) .
+                    "<br/>续费链接:".url('user/money/vip') ."</h2>
+                <br> <h3>现在的套餐与资费:{$item['group_name']} {$item['set_meal_money']}元/月</h3>
+        </div>
+    </div>
+</div>
+</body>");
+            }
+        }
+        return $rows;
+    }
+
+    private function isSend($uid, $time, $type) {
+        $rec = DB('send_email')->find(['uid' => $uid, 'type' => $type, '__order' => ' by time desc']);
+        if ($rec) {//查询到了,看看有没有过期
+            if ($rec['time'] < $time) {
+                DB('send_email')->update(['uid' => $uid, 'time' => time(), 'type' => $type], ['uid' => $uid, 'time' => $rec['time'], 'type' => $type]);
+                return true;
+            }
+            return false;
+        }
+        DB('send_email')->insert(['uid' => $uid, 'time' => time(), 'type' => $type]);
+        return true;
+    }
+
+    private function email_notice() {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        $rows = DB('user')->select()->fetchAll();
+        foreach ($rows as $item) {
+            sendEmail($item['email'], "邮件系统上线啦 - 信院小站", "<body style=\"margin:0;\">
+<div style=\"width:100%;height:100%;min-height:600px;\">
+    <img src=\"http://s.icodef.com/static/image/email_bg.jpg\" style=\"width:100%;height:100%;position: absolute;z-index: -1;\">
+    <div style=\"color: rgba(255, 0, 0, 1);margin-left: 15%;width: 70%;padding:20px\">
+        <div style=\"padding:10px;background: rgba(160, 160, 160, 0.5);border-radius: 5px;\">
+                <h1>瞧瞧的告诉你</h1>
+                <h2>邮件系统上线啦</h2>
+                <h3>以后将由邮件通知你的账号即将到期和一些重要的系统公告</h3>
+                <br>
+                <h3>有的邮箱可能无法看见图片</h3>
+        </div>
+    </div>
+</div>
+</body>");
+            echo $item['email'];
+        }
     }
 
     private function money_change($uid, $change, $log) {

@@ -12,8 +12,8 @@ namespace openvpn_stushare
 {
     class Functions
     {
-        public static float Version = 0.2F;
-        internal static string version = "v0.2";
+        public static float Version = 1.0F;
+        internal static string version = "v1.0";
         /// <summary>
         /// 写操作
         /// </summary>

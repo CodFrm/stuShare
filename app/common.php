@@ -180,3 +180,22 @@ function isAuth($group_id) {
     return false;
 }
 
+
+function sendEmail($to, $title, $content) {
+    $smtpserver = "smtp.exmail.qq.com";//SMTP服务器
+    $smtpserverport = 465;//SMTP服务器端口
+    $smtpusermail = "love@icodef.com";//SMTP服务器的用户邮箱
+    $smtpemailto = $to;//发送给谁
+    $smtpuser = "love@icodef.com";//SMTP服务器的用户帐号(或填写new2008oh@126.com，这项有些邮箱需要完整的)
+    $emailname="信院小站";
+    $smtppass = "VAhBsdKFPUf53QZc";//SMTP服务器的用户密码
+    $mailtitle = $title;//邮件主题
+    $mailcontent = $content;//邮件内容
+    $smtp = new icf\lib\smtp();
+    $smtp->setName($emailname);
+    $smtp->setServer($smtpserver, $smtpusermail, $smtppass, $smtpserverport, true); //设置smtp服务器，到服务器的SSL连接
+    $smtp->setFrom($smtpuser); //设置发件人
+    $smtp->setReceiver($smtpemailto); //设置收件人，多个收件人，调用多次
+    $smtp->setMail($mailtitle, $mailcontent); //设置邮件主题、内容
+    return $smtp->sendMail(); //发送
+}

@@ -54,5 +54,19 @@ class api {
         $ret['t'] = config('pc_notice_time');
         return json($ret);
     }
-
+    /**
+     * 影视在线
+     * @author Farmer
+     */
+    public function online(){
+        $row=DB('ip')->find(['ip'=>getIP(),'type'=>1]);
+        //判断有没有这条记录
+        if($row){
+            DB('ip')->update(['ip_time'=>time()],['ip'=>getIP(),'ip_time'=>$row['ip_time'],'type'=>1]);
+        }else{
+            DB('ip')->insert(['ip'=>getIP(),'ip_time'=>time(),'type'=>1]);
+        }
+        $count=DB('ip')->find(['ip_time'=>[time()-60,'>'],'type'=>1],'count(*)')['count(*)'];
+        return json(['code'=>0,'msg'=>'success','online'=>$count]);
+    }
 }

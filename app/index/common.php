@@ -62,7 +62,7 @@ function isEmail($email) {
  * @return bool
  */
 function verifyIP($ip){
-    if($ipMsg=DB('ip')->find(array('ip'=>$ip))){
+    if($ipMsg=DB('ip')->find(array('ip'=>$ip,'type'=>-1))){
         if($ipMsg['ip_time']<(time()-config('regip'))){
             DB('ip')->update(array('ip_time'=>time()),array('ip'=>$ip));
             return true;
@@ -70,6 +70,6 @@ function verifyIP($ip){
             return false;
         }
     }
-    DB('ip')->insert(array('ip'=>$ip,'ip_time'=>time()));
+    DB('ip')->insert(array('ip'=>$ip,'type'=>-1,'ip_time'=>time()));
     return true;
 }

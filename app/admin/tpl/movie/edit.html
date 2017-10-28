@@ -17,7 +17,7 @@
                                 class="tpl-form-line-small-title">Name</span></label>
                         <div class="am-u-sm-9">
                             <input type="text" class="tpl-form-input" id="name"
-                                   value="{$video['name']}">
+                                   value="{:th($video['name'],'1')}">
                             <input type="hidden" value="{$video['vid']}" id="vid">
                             <small>影视的名称</small>
                         </div>
@@ -28,7 +28,7 @@
                         <label class="am-u-sm-3 am-form-label">集数</label>
                         <div class="am-u-sm-9">
                             <input type="text" class="tpl-form-input" id="status"
-                                   value="{$video['status']}">
+                                   value="{:th($video['status'],'1')}">
                             <small>这是第几集</small>
                         </div>
                     </div>
@@ -37,7 +37,7 @@
                                 class="tpl-form-line-small-title">Pay</span></label>
                         <div class="am-u-sm-9">
                             <input type="text" class="tpl-form-input" id="pay"
-                                   value="{$video['pay']}">
+                                   value="{:th($video['pay'],'1')}">
                             <small>观看次影视需要多少积分</small>
                         </div>
                     </div>
@@ -46,7 +46,7 @@
                                 class="tpl-form-line-small-title">Url</span></label>
                         <div class="am-u-sm-9">
                             <input type="text" class="tpl-form-input" id="url"
-                                   value="{$video['url']}">
+                                   value="{:th($video['url'],'http://sv.icodef.com/VALLEY/MOVICE/')}">
                             <small>影视的下载链接</small>
                         </div>
                     </div>
@@ -56,7 +56,7 @@
                                 class="tpl-form-line-small-title">Image</span></label>
                         <div class="am-u-sm-9">
                             <input type="text" class="tpl-form-input" id="image_url"
-                                   value="{$video['image_url']}">
+                                   value="{:th($video['image_url'],'http://sv.icodef.com/VALLEY/IMAGE/')}">
                             <small>影视封面图片</small>
                         </div>
                     </div>
@@ -65,7 +65,7 @@
                                 class="tpl-form-line-small-title">Type</span></label>
                         <div class="am-u-sm-9">
                             <input type="text" class="tpl-form-input" id="type"
-                                   value="{$video['type']}">
+                                   value="{:th($video['type'],'0')}">
                             <small>影视的分类</small>
                         </div>
                     </div>
@@ -74,7 +74,7 @@
                                 class="tpl-form-line-small-title">Pay</span></label>
                         <div class="am-u-sm-9">
                             <input type="text" class="tpl-form-input" id="pay"
-                                   value="{$video['pay']}">
+                                   value="{:th($video['pay'],'1')}">
                             <small>0为不收费,大于0则收费</small>
                         </div>
                     </div>
@@ -92,7 +92,7 @@
                                 class="tpl-form-line-small-title">Mark</span></label>
                         <div class="am-u-sm-9">
                             <input type="text" class="tpl-form-input" id="mark"
-                                   value="{$video['mark']}">
+                                   value="{:th($video['mark'],'10')}">
                             <small>影视评分</small>
                         </div>
                     </div>

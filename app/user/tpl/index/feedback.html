@@ -33,7 +33,7 @@
         $.ajax({
             url: "{:url('user/api/feedback')}",
             type:'post',
-            data:{call:$('#call').val(),msg:$('#msg').val()},
+            data:{call:$('#call').val(),msg:$('#msg').val(),type:3},
             success: function (obj) {
                 alert(obj['msg']);
                 if(obj['code']=='0'){

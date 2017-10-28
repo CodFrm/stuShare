@@ -11,7 +11,7 @@
 namespace app\common\ctrl;
 
 class auth {
-    static $whitelist = ['pay_call','mlist','volume'];
+    static $whitelist = ['pay_call','mlist','volume','movie_vip'];
     protected $userMsg;
     public function __construct() {
         if (!in_array(input('action'), auth::$whitelist)) {
@@ -48,11 +48,11 @@ class auth {
      * @param $log
      * @param int $type
      */
-    public function wlog($uid,$log,$type=0){
+    public function wlog($uid,$log,$param,$type=0){
         $req='get:'.implodes(',',$_GET);
         $req.=' post:'.implodes(',',$_POST);
         $req.=' ip:'.getIP();
-        DB('log')->insert(array('log'=>$log,'log_req'=>$req,'log_uid'=>$uid,'log_time'=>time(),'log_type'=>$type));
+        DB('log')->insert(array('log'=>$log,'log_req'=>$req,'log_param'=>$param,'log_uid'=>$uid,'log_time'=>time(),'log_type'=>$type));
     }
 }
 function implodes($glue,$array){

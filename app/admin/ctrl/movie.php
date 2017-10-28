@@ -23,9 +23,17 @@ class movie extends auth {
         V()->assign('page',$page);
         V()->assign('pageAll',ceil($count/$total));
         V()->assign('movie_list', $movie_list);
+        $online=DB('ip')->find(['ip_time'=>[time()-60,'>'],'type'=>1],'count(*)')['count(*)'];
+        V()->assign('online', $online);
+
+        $online=DB('ip')->find(['ip_time'=>[time()-60,'>'],'type'=>1],'count(*)')['count(*)'];
+        V()->assign('online', $online);
+        $up=DB('ip')->find(['ip_time'=>[strtotime(date('Y/m/d 00:00:00')),'>'],'ip_time<'.strtotime(date('Y/m/d 23:59:59')),'type'=>1],'count(*)')['count(*)'];
+        V()->assign('up',$up);
+        $yesterday=DB('ip')->find(['ip_time'=>[strtotime(date('Y/m/d 00:00:00'))-86400,'>'],'ip_time<'.(strtotime(date('Y/m/d 23:59:59'))-86400),'type'=>1],'count(*)')['count(*)'];
+        V()->assign('yesterday',$yesterday);
         V()->display();
     }
-
     public function edit($vid = 0, $fvid = 0) {
         V()->assign('title', '影视管理');
         V()->assign('fvid', $fvid ?: $vid);

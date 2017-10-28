@@ -33,6 +33,8 @@ class db {
         'and'
     );
 
+    private $mark = array('b_start', 'b_end');
+
     static function init() {
         $dns = input('config.__DB_') . ':dbname=' . input('config.DB_DATABASE') . ';host=';
         $dns .= input('config.DB_SERVER') . ';charset=utf8';
@@ -79,6 +81,8 @@ class db {
         $logical = '';
         $subscript = 0;
         foreach ($where as $key => $value) {
+            $start = '';
+            $end = '';
             if (is_numeric($key)) {
                 if (is_string($value)) {
                     $sql .= ($subscript++ == 0 ? 'where ' : ' and ') . $value;
@@ -108,6 +112,17 @@ class db {
                 for ($n = 1; $n < $arrsize; $n++) {
                     if (in_array($value[$n], $this->logical)) {
                         $logical = $value[$n];
+                    } else if (in_array($value[$n], $this->mark)) {
+                        switch ($value[$n]) {
+                            case 'b_start': {
+                                $start = '(';
+                                break;
+                            }
+                            case 'b_end': {
+                                $end = ')';
+                                break;
+                            }
+                        }
                     } else {
                         $operator = $value[$n];
                     }
@@ -117,14 +132,18 @@ class db {
                     $operator = 'in';
                 }
                 $sql .= preg_replace(array(
+                    '/\$start/',
                     '/\$key/',
                     '/\$operator/',
-                    '/\$value/'
+                    '/\$value/',
+                    '/\$end/',
                 ), array(
+                    $start,
                     $key,
                     $operator ?: '=',
                     !empty($value[0]) ? $value[0] : 'null',
-                ), ' $key $operator $value ');
+                    $end
+                ), '$start $key $operator $value $end');
             } else if (is_numeric($key)) {
                 $sql .= ($subscript++ == 0 ? 'where ' : ' and ') . $value . ' ';
             } else if (substr($key, 0, 2) == '__') {

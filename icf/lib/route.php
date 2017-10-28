@@ -8,6 +8,7 @@
  * function:路由类
  *============================
  */
+
 namespace icf\lib;
 
 /**
@@ -79,8 +80,8 @@ class route {
         $className = __APP_ . '/' . $model . '/ctrl/' . $ctrl;
         if (file_exists($className . '.php')) {
             $className = preg_replace('/\//', '\\', $className);
-            $comPath=__APP_.'/common.php';
-            if (file_exists($comPath )) {
+            $comPath = __APP_ . '/common.php';
+            if (file_exists($comPath)) {
                 require_once $comPath;
             }
             G('model', $model);
@@ -114,19 +115,24 @@ class route {
                 // 参数绑定
                 $param = array();
                 foreach ($method->getParameters() as $value) {
-                    if (input('get.' . $value->getName())!==false) {
+                    if (input('get.' . $value->getName()) !== false) {
                         $param [] = input('get.' . $value->getName());
                     } else {
                         $param [] = $value->getDefaultValue();
                     }
                 }
-                if(method_exists($Object, '__init')) {
+                if (method_exists($Object, '__init')) {
                     call_user_func_array(array($Object, '__init'));
                 }
-                echo call_user_func_array(array(
+                $data = call_user_func_array(array(
                     $Object,
                     $action
                 ), $param);
+                if (is_array($data)) {
+                    echo json($data);
+                } else {
+                    echo $data;
+                }
                 return true;
             }
         }
@@ -194,12 +200,20 @@ class route {
         if (strrpos($cacheData, '->')) {
             preg_match_all('/([\d\w]+)/', $cacheData, $tmp);
             if (sizeof($tmp [0]) == 2) {
-                $ctrl = $tmp [0] [0];
-                $action = $tmp [0] [1];
+                if (!($ctrl = input(input('config.CTRL')))) {
+                    $ctrl = $tmp [0] [0];
+                }
+                if (!($action = input(input('config.ACTION')))) {
+                    $action = $tmp [0] [1];
+                }
             } else if (sizeof($tmp [0]) == 3) {
                 $model = $tmp [0] [0];
-                $ctrl = $tmp [0] [1];
-                $action = $tmp [0] [2];
+                if (!($ctrl = input(input('config.CTRL')))) {
+                    $ctrl = $tmp [0] [1];
+                }
+                if (!($action = input(input('config.ACTION')))) {
+                    $action = $tmp [0] [2];
+                }
             }
         }
         return [

@@ -258,12 +258,12 @@ body:before {
 }
 
 .sm-list > .sm-left {
-    position: absolute;
+    display: inline-block;
     width: 50%;
 }
 
 .sm-list > .sm-right {
-    position: absolute;
+    display: inline-block;
     text-align: center;
     left: 60%;
     width: 40%;

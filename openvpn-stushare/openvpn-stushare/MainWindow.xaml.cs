@@ -155,7 +155,7 @@ namespace openvpn_stushare
                     //测试数据
                     string data = "test data abcabc";
                     byte[] buffer = Encoding.ASCII.GetBytes(data);
-                    PingReply reply = pingSender.Send(mIp, 100, buffer, options);
+                    PingReply reply = pingSender.Send(mIp, 1000, buffer, options);
                     if (reply.Status == IPStatus.Success)
                     {
                         return reply.RoundtripTime.ToString() + "ms";

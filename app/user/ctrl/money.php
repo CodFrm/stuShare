@@ -33,6 +33,19 @@ class money extends auth {
                 if (DB('order')->insert($data) > 0) {
                     if ($userMsg = getUser($_GET['remarks'])) {
                         $this->money_change($userMsg['uid'], (double)$_GET['money'], '充值金额' . (double)$_GET['money'] . '元');
+                        sendEmail($userMsg['email'],'账号充值成功 - 信院小站',
+                            "<body style=\"margin:0;\">
+<div style=\"width:100%;height:100%;min-height:600px;\">
+    <img src=\"http://s.icodef.com/static/image/email_bg.jpg\" style=\"width:100%;height:100%;position: absolute;z-index: -1;\">
+    <div style=\"color: rgba(255, 0, 0, 1);margin-left: 15%;width: 70%;padding:20px\">
+        <div style=\"padding:10px;background: rgba(160, 160, 160, 0.5);border-radius: 5px;\">
+                <h2>您的账号{$userMsg['user']}充值成功,充值金额:{$_GET['money']}</h2>
+                <br><h3>若有误差,或者并未到账,请在反馈中反馈,客服会尽快处理</h3>
+                <h3><a href='http://sv.icodef.com/user/index/index'>个人主页</a> </h3>
+        </div>
+    </div>
+</div>
+</body>");
                     }
                 }
                 $ret = 'success';
@@ -66,6 +79,7 @@ class money extends auth {
                 <h2>您的账号还有{$day}天到期</h2><br/>到期时间:" . date("Y/m/d H:i:s", $item['expire_time']) .
                     "<br/>续费链接:".url('user/money/vip') ."</h2>
                 <br> <h3>现在的套餐与资费:{$item['group_name']} {$item['set_meal_money']}元/月</h3>
+                <h3><a href='http://sv.icodef.com/user/money/recharge'>前往充值</a></h3>
         </div>
     </div>
 </div>
@@ -93,16 +107,17 @@ class money extends auth {
         ignore_user_abort(true);
         $rows = DB('user')->select()->fetchAll();
         foreach ($rows as $item) {
-            sendEmail($item['email'], "邮件系统上线啦 - 信院小站", "<body style=\"margin:0;\">
+            sendEmail($item['email'], "电信线路开通啦(三号) - 信院小站", "<body style=\"margin:0;\">
 <div style=\"width:100%;height:100%;min-height:600px;\">
     <img src=\"http://s.icodef.com/static/image/email_bg.jpg\" style=\"width:100%;height:100%;position: absolute;z-index: -1;\">
     <div style=\"color: rgba(255, 0, 0, 1);margin-left: 15%;width: 70%;padding:20px\">
         <div style=\"padding:10px;background: rgba(160, 160, 160, 0.5);border-radius: 5px;\">
-                <h1>瞧瞧的告诉你</h1>
-                <h2>邮件系统上线啦</h2>
-                <h3>以后将由邮件通知你的账号即将到期和一些重要的系统公告</h3>
+                <h1>大家期盼已久的电信来了~</h1>
+                <h2>电信线路已经开通</h2>
+                <h2>速度将更将流畅,游戏延迟更低,五杀吃鸡随手拈来</h2>
+                <h2>手机配置文件下载:<a href='http://sv.icodef.com/user/api/downconfig?svid=5'>三号线路(电信)</a>请先连接校园网</h2>
                 <br>
-                <h3>有的邮箱可能无法看见图片</h3>
+                <h3>(以上内容是乱编的,我也不知道体验咋样2333,用了之后大家可以使用反馈功能反馈,或者在群里AT我^_^)</h3>
         </div>
     </div>
 </div>
@@ -112,11 +127,12 @@ class money extends auth {
     }
 
     private function money_change($uid, $change, $log) {
-        $this->wlog($uid, $log, 10);
         if ($change > 0) {
             DB('user')->update('`money`=`money`+' . $change, ['uid' => $uid]);
+            $this->wlog($uid, $log,$change, 10);
         } else {
             DB('user')->update('`money`=`money`-' . abs($change), ['uid' => $uid]);
+            $this->wlog($uid, $log,$change, 11);
         }
     }
 

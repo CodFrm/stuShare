@@ -21,12 +21,11 @@ db.autocommit(True)
 
 def ping():
     global db
-    cursor = db.cursor()
     try:  
         db.ping()       #cping 校验连接是否异常  
     except:  
         db = MySQLdb.connect(DB_IP, DB_USER, DB_PWD, DB_DATABASE, charset='utf8')
-        time.sleep(3)      #连接不成功,休眠3秒钟,继续循环，知道成功或重试次数结束  
+        #time.sleep(3)      #连接不成功,休眠3秒钟,继续循环，知道成功或重试次数结束  
 
 def execute(sql, param):
     global db

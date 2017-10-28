@@ -177,6 +177,19 @@ function outmsg($msg) {
     }
 }
 
+/**
+ * 模板用的三目运算符
+ * @author Farmer
+ * @param $bool
+ * @param $false
+ * @return mixed
+ */
+function th($bool,$true,$false=''){
+    if(empty($false)){
+        return $bool?:$true;
+    }
+    return $bool?$true:$false;
+}
 
 ///**
 // * 生成访问URL

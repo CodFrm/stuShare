@@ -15,7 +15,6 @@ return array(
     'DB_DATABASE' => 'stushare',
     'DB_SERVER' => 'localhost',
     'DB_PREFIX' => 'share_',
-    'USER_PWD' => 'sjDve%vgBGgtj#7e',
     // 数据库引擎
     '__DB_' => 'mysql',
     // 调试模式
@@ -28,11 +27,10 @@ return array(
     'CTRL' => 'get.ctrl',
     // 路由规则
     'ROUTE_RULE' => [
-        '{s}.php' => '${1}',
+        '{s}.php' => '${1}->index->index',
         '{s}/{s}' => '${1}->${2}',
         '{s}' => '${1}->index',
     ],
     'PUBLIC' => 'public',
-    'APPID'=>'101385205'
 );
 

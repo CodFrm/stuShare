@@ -91,19 +91,19 @@ class api extends auth {
         } else {
             $type = 0;
         }
-        if($type!=1 or $type!=2){
-            return '';
-        }
-        $retJson['msg'] = $ret;
-        if ($ret === true) {
-            if(strlen($_POST['msg'])<20){
-                $retJson = ['code' => -1, 'msg' => '你就这么点想说的?'];
-            }else {
-                $retJson = ['code' => 0, 'msg' => '反馈成功'];
-                DB('feedback')->insert(['uid' => $_COOKIE['uid'], 'contact' => $_POST['call'],
-                    'msg' => $_POST['msg'], 'time' => time(), 'type' => $type]);
+        if($type!=1 or $type!=2 or $type!=3){
+            $retJson['msg'] = $ret;
+            if ($ret === true) {
+                if(strlen($_POST['msg'])<20){
+                    $retJson = ['code' => -1, 'msg' => '你就这么点想说的?'];
+                }else {
+                    $retJson = ['code' => 0, 'msg' => '反馈成功'];
+                    DB('feedback')->insert(['uid' => $_COOKIE['uid'], 'contact' => $_POST['call'],
+                        'msg' => $_POST['msg'], 'time' => time(), 'type' => $type]);
+                }
             }
+            return json($retJson);
         }
-        return json($retJson);
+        return '';
     }
 }

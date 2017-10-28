@@ -59,7 +59,8 @@ class api {
      * @author Farmer
      */
     public function online(){
-        $row=DB('ip')->find(['ip'=>getIP(),'type'=>1]);
+        $where=['ip'=>getIP(),'type'=>1,'ip_time'=>[strtotime(date('Y/m/d 00:00:00')),'>'],'ip_time<'.strtotime(date('Y/m/d 23:59:59'))];
+        $row=DB('ip')->find($where);
         //判断有没有这条记录
         if($row){
             DB('ip')->update(['ip_time'=>time()],['ip'=>getIP(),'ip_time'=>$row['ip_time'],'type'=>1]);

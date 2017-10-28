@@ -73,4 +73,19 @@ class movie extends auth {
         $apiUrl .= '?action=api&url=' . $url . '&key=' . $key . ($v !== '0' ? ('&v=' . $v) : '');
         echo file_get_contents($apiUrl);
     }
+
+    public function movie_vip(){
+        V()->display();
+    }
+
+    public function statistics($vid=0){
+        $row=DB('video')->find(['vid'=>$vid]);
+        $ret=['code'=>0,'msg'=>'success'];
+        if($row){
+            $this->wlog($_COOKIE['uid'],$this->userMsg['user'].'观看'.$row['name'],$row['vid'],5);
+        }else{
+            $ret=['code'=>-1,'msg'=>'not find vid'];
+        }
+        return $ret;
+    }
 }

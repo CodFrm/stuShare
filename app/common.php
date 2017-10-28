@@ -76,7 +76,7 @@ function getRandString($length, $type = 2) {
     $randString = '1234567890qwwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHHJKLZXCVBNM';
     $retStr = '';
     for ($n = 0; $n < $length; $n++) {
-        $retStr .= substr($randString, rand(0, 10 + $type * 24), 1);
+        $retStr .= substr($randString, rand(0, 9 + $type * 24), 1);
     }
     return $retStr;
 }

@@ -59,31 +59,31 @@
                             <div class="am-fr">
                                 <ul class="am-pagination tpl-pagination">
                                     {if $page!=1}
-                                    <li><a href="{:url('admin/user/index','page='.($page-1))}">«</a></li>
+                                    <li><a href="{:url('admin/user/feedback','page='.($page-1))}">«</a></li>
                                     {/if}
                                     {if $page<4}
                                     {while ++$i<=8}
                                     <li
                                     {if $page==$i} class="am-active"{/if}><a
-                                        href="{:url('admin/user/index','page='.$i)}">{$i}</a></li>
+                                        href="{:url('admin/user/feedback','page='.$i)}">{$i}</a></li>
                                     {/while}
                                     {elseif $page>=$pageAll-4}
                                     <?php $i=$pageAll-8;?>
                                     {while ++$i<=$pageAll}
                                     <li
                                     {if $page==$i} class="am-active"{/if}><a
-                                        href="{:url('admin/user/index','page='.$i)}">{$i}</a></li>
+                                        href="{:url('admin/user/feedback','page='.$i)}">{$i}</a></li>
                                     {/while}
                                     {else}
                                     <?php $i=$page-4;?>
                                     {while ++$i<=$page+4}
                                     <li
                                     {if $page==$i} class="am-active"{/if}><a
-                                        href="{:url('admin/user/index','page='.$i)}">{$i}</a></li>
+                                        href="{:url('admin/user/feedback','page='.$i)}">{$i}</a></li>
                                     {/while}
                                     {/if}
                                     {if $page!=$pageAll}
-                                    <li><a href="{:url('admin/user/index','page='.($page+1))}">»</a></li>
+                                    <li><a href="{:url('admin/user/feedback','page='.($page+1))}">»</a></li>
                                     {/if}
                                 </ul>
                             </div>

@@ -106,4 +106,13 @@ class api extends auth {
         }
         return '';
     }
+
+    public function check(){
+        $row=db('ip')->find(['ip'=>'check_'.$_COOKIE['uid'],'type'=>2,'ip_time'=>[strtotime(date('Y-m-d 0:0:0',time()-86400)),'>']]);
+        if($row){
+            return ['code'=>-1,'msg'=>'今天已经签过到了'];
+        }
+        db('ip')->insert(['ip'=>'check_'.$_COOKIE['uid'],'type'=>2,'ip_time'=>time()]);
+        return ['code'=>0,'msg'=>'签到成功'];
+    }
 }

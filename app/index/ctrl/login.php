@@ -74,7 +74,7 @@ class login {
 </body>");
                     DB('send_email')->insert(['uid'=>$uid,'time'=>$code,'type'=>'1']);
                     //DB('inv_code')->update(['inv_use_uid' => $uid, 'inv_use_time' => time()], ['inv_code' => $_POST['inv_code']]);
-//                    DB('usergroup')->insert(['uid' => $uid, 'group_id' => config('base_auth')]);
+                    DB('usergroup')->insert(['uid' => $uid, 'group_id' => 3]);
                 }
             } else {
                 $json['msg'] = $ret;

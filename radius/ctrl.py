@@ -5,8 +5,9 @@ import json
 import os
 import threading
 import time
-# 控制服务器ip
-serverIP = ""
+
+# openvpn state文件路径
+OVSTATE='C:\Users\Farmer\Desktop\state.log'
 #  定义进出设备(eth0 内网，eth1外网)
 IDEV = "tun0"
 ODEV = "ens33"
@@ -24,7 +25,7 @@ MDOWNLOAD = "8mbit"
 
 def exec_shell(command):
     print command
-    os.system(command)
+    return os.system(command)
 
 
 exec_shell("iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -j MASQUERADE")
@@ -65,6 +66,11 @@ def flowCtrl(ip, down):
                ip + " -j MARK --set-mark 2" + number)
     exec_shell("iptables -t mangle -A POSTROUTING -d " + ip + " -j RETURN")
 
+def verifyIpOnline(ip):
+    print exec_shell('ping -c 1 -w 1'+ip)
+    return False
+
+verifyIpOnline('127.0.0.1')
 
 cache_list={}
 
@@ -88,7 +94,6 @@ def ctrl():
             elif row['type']=='verify':
                 
                 pass
-
         except:
             print "json error:" + data
 

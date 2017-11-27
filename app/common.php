@@ -199,3 +199,4 @@ function sendEmail($to, $title, $content) {
     $smtp->setMail($mailtitle, $mailcontent); //设置邮件主题、内容
     return $smtp->sendMail(); //发送
 }
+

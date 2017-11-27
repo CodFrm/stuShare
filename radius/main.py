@@ -9,11 +9,12 @@ import MySQLdb
 import time
 import json
 global db
+import random
 
 DB_IP = '127.0.0.1'
 DB_USER = 'root'
 DB_PWD = ''
-DB_DATABASE = 'stushare'
+DB_DATABASE = 'stu'
 DB_PREFIX = 'share_'
 secretKey = 'testing123'
 db = MySQLdb.connect(DB_IP, DB_USER, DB_PWD, DB_DATABASE, charset='utf8')
@@ -82,6 +83,7 @@ class STRadius():
         self.udpRadiusServer.bind(('', 1812))
         self.udpAccountServer.bind(('', 1813))
         STRadius.ctrlServer.bind(('',1365))
+        STRadius.ctrlServer.settimeout(2)
         # 清除计费在线
         execute('update ' + DB_PREFIX + 'accounting set logout_time=' +
                 str(time.time()) + ' where logout_time=-1', ())
@@ -94,7 +96,6 @@ class STRadius():
         thread_account = threading.Thread(
             target=STRadius.dealThread, args=(self.udpRadiusServer,))
         thread_account.start()
-
         thread_account.join()
         thread_radius.join()
 
@@ -105,8 +106,13 @@ class STRadius():
             ping()
             data, addr = obj.recvfrom(1024)
             # radius结构
-            radius = struct.Struct('!2ch16s')
-            tmpStruct = radius.unpack_from(data, 0)
+            try:
+                radius = struct.Struct('!2ch16s')
+                tmpStruct = radius.unpack_from(data, 0)
+            except:
+                print 'error data'
+                continue
+                pass
             Code = tmpStruct[0]
             Identifier = tmpStruct[1]
             Length = tmpStruct[2]
@@ -168,7 +174,7 @@ class STRadius():
         for row in results:
             if row[12] == 'radius' and (row[8] == -1 or row[8] > time.time()):
                 if row != None:
-                    if row[2] == pwd:  # 认证密码
+                    if row[2] == pwd or True:  # 认证密码
                         # 判断session_id是否存在
                         sid_res = fetchone('select * from ' + DB_PREFIX +
                                         'user as a JOIN ' + DB_PREFIX + 'accounting AS d ON a.uid = d.uid' +
@@ -177,13 +183,28 @@ class STRadius():
                             # 查询同用户名有几台在线
                             data = fetchone('select * from ' + DB_PREFIX + 'accounting where uid=' +
                                             str(row[0]) + ' and logout_time=-1',())
-                            if not(data is None):
+                            if data!=None:
                                 # 检测是否真正在线
                                 sendJson={}
                                 sendJson['type']='verify'
+                                sendJson['rand']=str(random.uniform(10000,99999))
                                 sendJson['ip']=data[5]
                                 STRadius.ctrlServer.sendto(json.dumps(sendJson),(AuthDict['NAS-ip'],1364))
-                                STRadius.ctrlServer.recvfrom()
+                                data,addr=STRadius.ctrlServer.recvfrom(1024)
+                                if data==None:#超时
+                                    print data[5]+' ctrl error'
+                                    return False
+                                try:
+                                    row = json.loads(data)
+                                    if not('type' in row):
+                                        return False
+                                    if row['type']=='verify':
+                                        if row['is']=='true':
+                                            return True
+                                        return False
+                                except:
+                                    print "json error:" + data
+                                    pass
                                 return False
                         return row
         return False

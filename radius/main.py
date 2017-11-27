@@ -73,14 +73,15 @@ def bin2ip(bin):
 
 class STRadius():
 
+    ctrlServer=object
     def __init__(self):
         # 初始化
         self.udpRadiusServer = socket(AF_INET, SOCK_DGRAM)  # radius认证服务器 1812
         self.udpAccountServer = socket(AF_INET, SOCK_DGRAM)  # 计费服务器 1813
-        self.ctrlServer=socket(AF_INET,SOCK_DGRAM) # 服务器控制udp 1364
+        STRadius.ctrlServer=socket(AF_INET,SOCK_DGRAM) # 服务器控制udp 1364
         self.udpRadiusServer.bind(('', 1812))
         self.udpAccountServer.bind(('', 1813))
-        self.ctrlServer.bind(('',1365))
+        STRadius.ctrlServer.bind(('',1365))
         # 清除计费在线
         execute('update ' + DB_PREFIX + 'accounting set logout_time=' +
                 str(time.time()) + ' where logout_time=-1', ())
@@ -88,17 +89,17 @@ class STRadius():
     def listen(self):
         print '开始监听'
         thread_radius = threading.Thread(
-            target=STRadius.dealThread, args=(self.udpAccountServer,self.ctrlServer,))
+            target=STRadius.dealThread, args=(self.udpAccountServer,))
         thread_radius.start()
         thread_account = threading.Thread(
-            target=STRadius.dealThread, args=(self.udpRadiusServer,self.ctrlServer,))
+            target=STRadius.dealThread, args=(self.udpRadiusServer,))
         thread_account.start()
 
         thread_account.join()
         thread_radius.join()
 
     @staticmethod
-    def dealThread(obj,ctrl):
+    def dealThread(obj):
         # 处理线程
         while True:
             ping()
@@ -135,9 +136,10 @@ class STRadius():
                                          'set_meal as b on a.group_id=b.group_id'+
                                          ' where uid=%s',[str(userMsg[0])])
                             sendJson={}
+                            sendJson['type']='flow'
                             sendJson['width']=row[5]
                             sendJson['ip']=AuthDict['Framed-IP']
-                            ctrl.sendto(json.dumps(sendJson),(AuthDict['NAS-ip'],1364))
+                            STRadius.ctrlServer.sendto(json.dumps(sendJson),(AuthDict['NAS-ip'],1364))
                         except :
                             print '权限错误'
                        
@@ -173,9 +175,15 @@ class STRadius():
                                         ' where (`user`=%s or `email`=%s) and `session_id`=%s and `logout_time`=-1', [user,user,sid])
                         if sid_res==None:
                             # 查询同用户名有几台在线
-                            data = fetchone('select count(*) from ' + DB_PREFIX + 'accounting where uid=' +
+                            data = fetchone('select * from ' + DB_PREFIX + 'accounting where uid=' +
                                             str(row[0]) + ' and logout_time=-1',())
-                            if data[0] > 0:
+                            if not(data is None):
+                                # 检测是否真正在线
+                                sendJson={}
+                                sendJson['type']='verify'
+                                sendJson['ip']=data[5]
+                                STRadius.ctrlServer.sendto(json.dumps(sendJson),(AuthDict['NAS-ip'],1364))
+                                STRadius.ctrlServer.recvfrom()
                                 return False
                         return row
         return False

@@ -303,6 +303,7 @@ class db {
     function rollback() {
         $this->exec('rollback');
     }
+
 }
 
 /**

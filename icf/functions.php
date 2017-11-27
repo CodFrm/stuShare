@@ -226,3 +226,4 @@ function url($action='',$param='') {
     }
     return __HOME_.$url.($param?('?'.$param):'');
 }
+

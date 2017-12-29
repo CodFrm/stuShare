@@ -1,14 +1,15 @@
 <?php
-
 /**
  *============================
  * author:Farmer
- * time:下午7:44:09
+ * time:2017/11/16
  * blog:blog.icodef.com
- * function:视图类
+ * function:模板引擎
  *============================
  */
+
 namespace icf\lib;
+
 
 /**
  * 视图类
@@ -17,115 +18,130 @@ namespace icf\lib;
  * @version 1.0
  */
 class view {
-	private $tplValues = array ();
+    private static $tplVar = array();
 
-	/**
-	 * 设置值
-	 *
-	 * @author Farmer
-	 * @param string $param
-	 * @param string $value
-	 * @return
-	 *
-	 */
-	public function assign($param, $value) {
-		$this->tplValues [$param] = $value;
-	}
-	/**
-	 * 载入编译模板文件
-	 *
-	 * @author Farmer
-	 * @param string $filename
-	 * @return bool
-	 */
-	public function display($filename='') {
-	    if($filename===''){
-	        $filename=input('action');
+    public function __construct() {
+        //检查缓存目录
+        if (!file_exists(__ROOT_ . '/app/cache/tpl')) {
+            mkdir(__ROOT_ . '/app/cache/tpl', 0777, true);
         }
-		if(strpos($filename,'/')==FALSE ){
-			$path = __ROOT_ . '/app/' . input('model') . '/tpl/'.input('ctrl').'/' . $filename;
-		}else{
-			$path = __ROOT_ . '/app/' .  input('model')  . '/tpl/'. $filename;
-		}
-		$suffix='.'.input('config.TPL_SUFFIX');
-		if(substr($path,strlen($path)-strlen($suffix),strlen($suffix))!=$suffix){
-		    $path.=$suffix;
+    }
+
+    /**
+     * 设置值
+     *
+     * @author Farmer
+     * @param string $param
+     * @param string $value
+     * @return
+     *
+     */
+    public function assign($param, $value) {
+        self::$tplVar [$param] = $value;
+    }
+
+    /**
+     * 输出模板内容
+     * @author Farmer
+     * @param string $filename
+     * @return null
+     */
+    public function display($filename = '') {
+        $cache = self::compile($filename);
+        if ($cache) {
+            echo $cache;
+            return true;
         }
-		if (! file_exists ( $path )) {
-			echo '</br>load error';
-			return false;
-		}
-		$cache = __ROOT_ . '/app/cache/tpl/' . md5 ( $path ) . '.php';
-		$this->fetch ( $path, $cache );
-		return $this;
-	}
-	/**
-	 * 生成编译文件并输出
-	 *
-	 * @author Farmer
-	 * @param string $path
-	 * @param string $cache
-	 * @return
-	 *
-	 */
-	private function fetch($path, $cache) {
-		$fileData = file_get_contents ( $path );
-		if ( !file_exists ( $cache ) || filemtime ( $path ) > filemtime ( $cache )) {
-			$pattern = array (
-					'/\{(\$[\w\[\]\']+)\}/', // 匹配{$xxx}
-					'/{while (.*?)}/',
-					'/{\$(.*?) = (.*?)}/',
-					'/{\/while}/',
-					'/{break}/',
-					'/{continue}/',
-					'/{if (.*?)}/',
-					'/{\/if}/',
-					'/{elseif (.*?)}/',
-					'/{else}/' ,
-					'/{foreach (.*?)}/',
-					'/{\/foreach}/',
-					"/{include '(.*?)'}/",
-					'/{(\$[\w\[\]\']*[+-]*)\}/',
-					'/{\:([^"^\r^}]+)}/'
-			);
-			$replace = array (
-					'<?php echo ${1};?>',
-					'<?php while(${1}):?>',
-					'<?php \$${1}=${2};?>',
-					'<?php endwhile;?>',
-					'<?php break;?>',
-					'<?php continue;?>',
-					'<?php if(${1}):?>',
-					'<?php endif;?>',
-					'<?php elseif(${1}):?>',
-					'<?php else:?>' ,
-					'<?php foreach(${1}):?>',
-					'<?php endforeach;?>',
-					'<?php V()->display("${1}");?>',
-					'<?php ${1};?>',
-					'<?php echo ${1};?>'
-			);
-			$cacheData = preg_replace ( $pattern, $replace, $fileData );
-			file_put_contents ( $cache, $cacheData );
-		} else {
-			$cacheData = file_get_contents ( $cache );
-		}
-		$pattern = array (
-				'/__PUBLIC__/',
-				'/__HOME__/'
-		);
-		$replace = array (
-				input('config.PUBLIC'),
-				__HOME_
-		);
-		$cacheData = preg_replace ( $pattern, $replace, $cacheData );
-		preg_match_all ( '/\{\$([a-zA-Z0-9]+)\}/', $fileData, $tmp );
-		for($i = 0; $i < sizeof ( $tmp [1] ); $i ++) {
-			if (! isset ( $this->tplValues [$tmp [1] [$i]] )) {
-				$this->tplValues [$tmp [1] [$i]] = '';
-			}
-		}
-		extract ( $this->tplValues );
-		eval ( '?>' . $cacheData );
-	}
+        return false;
+    }
+
+    /**
+     * 返回编译内容
+     * @param $filename
+     * @return string
+     */
+    public function compile($filename = '') {
+        if ($filename === '') {
+            $filename = input('action');
+        }
+        if (strpos($filename, '/') === false) {
+            $path = __ROOT_ . '/app/' . input('model') . '/tpl/' . input('ctrl') . '/' . $filename;
+        } else {
+            $path = __ROOT_ . '/app/' . input('model') . '/tpl/' . $filename;
+        }
+        $suffix = '.' . input('config.TPL_SUFFIX');
+        if (substr($path, strlen($path) - strlen($suffix), strlen($suffix)) != $suffix) {
+            $path .= $suffix;
+        }
+        if (!is_file($path)) {
+            echo '</br>template load error';
+            return false;
+        }
+        $cache = __ROOT_ . '/app/cache/tpl/' . md5($path) . '.php';
+        return self::fetch($path, $cache);
+    }
+
+    /**
+     * 生成编译文件并返回
+     *
+     * @author Farmer
+     * @param string $path
+     * @param string $cache
+     * @return
+     *
+     */
+    private function fetch($path, $cache) {
+        $fileData = file_get_contents($path);
+        if (!file_exists($cache) || filemtime($path) > filemtime($cache)) {
+            $pattern = array(
+                '/\{(\$[\w\[\]\']+)\}/',
+                '/{break}/',
+                '/{continue}/',
+                '/{if (.*?)}/',
+                '/{\/if}/',
+                '/{elseif (.*?)}/',
+                '/{else}/',
+                '/{foreach (.*?)}/',
+                '/{\/foreach}/',
+                "/{include '(.*?)'}/",
+                '/{\:(.*?)}/'
+            );
+            $replace = array(
+                '<?php echo ${1};?>',
+                '<?php break;?>',
+                '<?php continue;?>',
+                '<?php if(${1}):?>',
+                '<?php endif;?>',
+                '<?php elseif(${1}):?>',
+                '<?php else:?>',
+                '<?php foreach(${1}):?>',
+                '<?php endforeach;?>',
+                '<?php view()->display("${1}");?>',
+                '<?php echo ${1};?>'
+            );
+            $cacheData = preg_replace($pattern, $replace, $fileData);
+            @file_put_contents($cache, $cacheData);
+        } else {
+            $cacheData = file_get_contents($cache);
+        }
+        $pattern = array(
+            '/__HOME__/'
+        );
+        $replace = array(
+            __HOME_
+        );
+        $cacheData = preg_replace($pattern, $replace, $cacheData);
+        preg_match_all('/\{\$([a-zA-Z0-9_]+)\}/', $fileData, $tmp);
+        for ($i = 0; $i < sizeof($tmp [1]); $i++) {
+            if (!isset (self::$tplVar [$tmp [1] [$i]])) {
+                self::$tplVar [$tmp [1] [$i]] = '';
+            }
+        }
+        ob_start();
+        extract(self::$tplVar);
+        eval ('?>' . $cacheData);
+        $content = ob_get_contents();
+        ob_end_clean();
+        return $content;
+    }
 }

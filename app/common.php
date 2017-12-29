@@ -135,7 +135,7 @@ function uidUser($uid) {
  * @return array
  */
 function getGroup($uid) {
-    if ($rec = DB('usergroup as a|group as b')->select(['uid' => $uid, 'a.group_id=b.group_id'])) {
+    if ($rec = DB('usergroup as a|group as b')->select(['uid' => $uid,'(a.expire_time=-1 or a.expire_time>'.time().')', 'a.group_id=b.group_id'])) {
         return $rec->fetchAll();
     }
     return [];

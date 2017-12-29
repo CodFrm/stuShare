@@ -12,7 +12,7 @@ return array(
     // 定义数据库信息
     'DB_USER' => 'root',
     'DB_PWD' => '',
-    'DB_DATABASE' => 'stu',
+    'DB_DATABASE' => 'radius',
     'DB_SERVER' => 'localhost',
     'DB_PREFIX' => 'share_',
     // 数据库引擎

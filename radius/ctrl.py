@@ -5,9 +5,9 @@ import json
 import os
 import threading
 import time
+#  openvpn-status 文件路径
+OVSPATH = 'C:\Users\codef\Desktop\log.txt'
 
-# openvpn state文件路径
-OVSTATE='C:\Users\Farmer\Desktop\state.log'
 #  定义进出设备(eth0 内网，eth1外网)
 IDEV = "tun0"
 ODEV = "ens33"
@@ -37,42 +37,58 @@ exec_shell("tc qdisc add dev " + ODEV + " root handle 10: htb default 1")
 exec_shell("tc qdisc add dev " + IDEV + " root handle 10: htb default 1")
 
 # # 定义第一层的 10:1 类别 (上行/下行 总带宽)
-exec_shell("tc class add dev " + ODEV +
-           " parent 10: classid 10:1 htb rate " + UP + " ceil " + UP)
-exec_shell("tc class add dev " + IDEV +
-           " parent 10: classid 10:1 htb rate " + DOWN + " ceil " + DOWN)
+exec_shell("tc class add dev " + ODEV + " parent 10: classid 10:1 htb rate " +
+           UP + " ceil " + UP)
+exec_shell("tc class add dev " + IDEV + " parent 10: classid 10:1 htb rate " +
+           DOWN + " ceil " + DOWN)
 
 
 def flowCtrl(ip, down):
     down = str(down)
     number = ip[ip.rfind(".") + 1:]
-    exec_shell("tc class replace dev " + ODEV + " parent 10:1 classid 10:2" +
-               number + " htb rate " + MUPLOAD + " ceil " + MUPLOAD + " prio 1")
-    exec_shell("tc qdisc replace dev " + ODEV + " parent 10:2" +
-               number + " handle 100" + number + ": pfifo")
+    exec_shell(
+        "tc class replace dev " + ODEV + " parent 10:1 classid 10:2" + number +
+        " htb rate " + MUPLOAD + " ceil " + MUPLOAD + " prio 1")
+    exec_shell("tc qdisc replace dev " + ODEV + " parent 10:2" + number +
+               " handle 100" + number + ": pfifo")
     exec_shell("tc filter replace dev " + ODEV +
-               " parent 10: protocol ip prio 100 handle 2" + number + " fw classid 10:2" + number)
+               " parent 10: protocol ip prio 100 handle 2" + number +
+               " fw classid 10:2" + number)
     # tc filter add dev $IDEV parent 10: protocol ip prio 1 u32 match ip dst $INET$i/32 flowid 10:2$i
-    exec_shell("tc class replace dev " + IDEV + " parent 10:1 classid 10:2" +
-               number + " htb rate " + down + "mbit ceil " + down + "mbit prio 1")
-    exec_shell("tc qdisc replace dev " + IDEV + " parent 10:2" +
-               number + " handle 100" + number + ": pfifo")
+    exec_shell(
+        "tc class replace dev " + IDEV + " parent 10:1 classid 10:2" + number +
+        " htb rate " + down + "mbit ceil " + down + "mbit prio 1")
+    exec_shell("tc qdisc replace dev " + IDEV + " parent 10:2" + number +
+               " handle 100" + number + ": pfifo")
     exec_shell("tc filter replace dev " + IDEV +
-               " parent 10: protocol ip prio 100 handle 2" + number + " fw classid 10:2" + number)
-    exec_shell("iptables -t mangle -A PREROUTING -s " +
-               ip + " -j MARK --set-mark 2" + number)
+               " parent 10: protocol ip prio 100 handle 2" + number +
+               " fw classid 10:2" + number)
+    exec_shell("iptables -t mangle -A PREROUTING -s " + ip +
+               " -j MARK --set-mark 2" + number)
     exec_shell("iptables -t mangle -A PREROUTING -s " + ip + " -j RETURN")
-    exec_shell("iptables -t mangle -A POSTROUTING -d " +
-               ip + " -j MARK --set-mark 2" + number)
+    exec_shell("iptables -t mangle -A POSTROUTING -d " + ip +
+               " -j MARK --set-mark 2" + number)
     exec_shell("iptables -t mangle -A POSTROUTING -d " + ip + " -j RETURN")
 
+
 def verifyIpOnline(ip):
-    print exec_shell('ping -c 1 -w 1'+ip)
+    try:
+        file_object = open(OVSPATH)
+        all_the_text = file_object.read()
+        file_object.close()
+        if all_the_text.find(ip) >= 0:
+            return True
+        return False
+    except:
+        print 'error'
+
     return False
 
-verifyIpOnline('127.0.0.1')
 
-cache_list={}
+print 'connect:' + str(verifyIpOnline('127.0.0.1'))
+
+cache_list = {}
+
 
 def ctrl():
     flow = socket(AF_INET, SOCK_DGRAM)
@@ -82,25 +98,30 @@ def ctrl():
         print data
         try:
             row = json.loads(data)
-            if not('type' in row):
+            if not ('type' in row):
                 continue
-            if row['type']=='flow':
-                if not(row['ip'] in cache_list):
+            if row['type'] == 'flow':
+                if not (row['ip'] in cache_list):
                     flowCtrl(row['ip'], row['width'])
-                elif cache_list[row['ip']]!=row['width']:
+                elif cache_list[row['ip']] != row['width']:
                     flowCtrl(row['ip'], row['width'])
                     pass
-                cache_list[row['ip']]=row['width']
-            elif row['type']=='verify':
-                
+                cache_list[row['ip']] = row['width']
+            elif row['type'] == 'verify':
+                if verifyIpOnline(row['ip']):
+                    row['online'] = 'true'
+                else:
+                    row['online'] = 'false'
+                    pass
+                flow.sendto(json.dumps(row), addr)
                 pass
-        except:
+        except Exception, e:
             print "json error:" + data
+            print "error:" + e[0]
 
 
 if __name__ == '__main__':
-    thread_ctrl = threading.Thread(
-        target=ctrl)
+    thread_ctrl = threading.Thread(target=ctrl)
     thread_ctrl.start()
     thread_ctrl.join()
     print 'End'

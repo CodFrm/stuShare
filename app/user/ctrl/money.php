@@ -194,7 +194,7 @@ class money extends auth {
         }
     }
 
-    public function hk() {
+    private function hk() {
         $req = DB()->query("SELECT
 	*
 FROM

@@ -5,9 +5,12 @@ import json
 import os
 import threading
 import time
+import urllib2
+import urllib
 #  openvpn-status 文件路径
-OVSPATH = 'C:\Users\codef\Desktop\log.txt'
-
+OVSPATH = '/etc/openvpn/openvpn-status.log'
+U = '201617370142'
+P = 'zouqin123'
 #  定义进出设备(eth0 内网，eth1外网)
 IDEV = "tun0"
 ODEV = "ens33"
@@ -120,8 +123,51 @@ def ctrl():
             print "error:" + e[0]
 
 
+class MyHTTPErrorProcessor(urllib2.HTTPErrorProcessor):
+
+    def http_response(self, request, response):
+        code, msg, hdrs = response.code, response.msg, response.info()
+
+        # only add this line to stop 302 redirection.
+        if code == 302:
+            return response
+
+        if not (200 <= code < 300):
+            response = self.parent.error(
+                'http', request, response, code, msg, hdrs)
+        return response
+
+    https_response = http_response
+
+
+def monitor():
+    while True:
+        url = "http://www.icodef.com"
+        # req = urllib2.Request(url)
+        req = urllib2.build_opener(MyHTTPErrorProcessor)
+        response = req.open(url)
+        if response.code == 302:
+            if 'location' in response.headers:
+                url = response.headers['location']
+            else:
+                url = response.headers['Location']
+            pass
+        print url
+        if url == 'http://10.253.0.1':
+            url = 'http://10.253.0.1/a70.htm'
+            response = urllib.urlopen(
+                url, 'DDDDD='+U+'&upass='+P+'&R1=0&R2=&R6=0&para=00&0MKKey=123456')
+            print response.read()
+        time.sleep(10)
+        pass
+    pass
+
+
 if __name__ == '__main__':
     thread_ctrl = threading.Thread(target=ctrl)
     thread_ctrl.start()
+    thread_monitor = threading.Thread(target=monitor)
+    thread_monitor.start()
     thread_ctrl.join()
+    thread_monitor.join()
     print 'End'

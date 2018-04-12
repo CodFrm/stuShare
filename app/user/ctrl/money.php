@@ -168,11 +168,7 @@ class money extends auth {
                                 }
                                 $newTime += $addTime;
                             }
-                            if ($oldSm['expire_time'] < time()) {//到期续期
-                                $extime = time() + $newTime;
-                            } else {//增加时间
-                                $extime = $oldSm['expire_time'] + $newTime;
-                            }
+                            $extime = time() + $newTime;
                             DB('usergroup')->update(['group_id' => $group_id, 'expire_time' => $extime], ['uid' => $_COOKIE['uid'], 'group_id' => $oldSm['group_id']]);
                         } else {
                             $extime = time() + $newTime;

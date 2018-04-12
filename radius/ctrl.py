@@ -120,7 +120,7 @@ def ctrl():
                 pass
         except Exception, e:
             print "json error:" + data
-            print "error:" + e[0]
+            print "error"
 
 
 class MyHTTPErrorProcessor(urllib2.HTTPErrorProcessor):
@@ -142,23 +142,27 @@ class MyHTTPErrorProcessor(urllib2.HTTPErrorProcessor):
 
 def monitor():
     while True:
-        url = "http://www.icodef.com"
-        # req = urllib2.Request(url)
-        req = urllib2.build_opener(MyHTTPErrorProcessor)
-        response = req.open(url)
-        if response.code == 302:
-            if 'location' in response.headers:
-                url = response.headers['location']
-            else:
-                url = response.headers['Location']
+        try:
+            url = "http://www.icodef.com"
+            # req = urllib2.Request(url)
+            req = urllib2.build_opener(MyHTTPErrorProcessor)
+            response = req.open(url)
+            if response.code == 302:
+                if 'location' in response.headers:
+                    url = response.headers['location']
+                else:
+                    url = response.headers['Location']
+                pass
+            print url
+            if url == 'http://10.253.0.1':
+                url = 'http://10.253.0.1/a70.htm'
+                response = urllib.urlopen(
+                    url, 'DDDDD='+U+'&upass='+P+'&R1=0&R2=&R6=0&para=00&0MKKey=123456')
+                print response.read()
+            time.sleep(20)
             pass
-        print url
-        if url == 'http://10.253.0.1':
-            url = 'http://10.253.0.1/a70.htm'
-            response = urllib.urlopen(
-                url, 'DDDDD='+U+'&upass='+P+'&R1=0&R2=&R6=0&para=00&0MKKey=123456')
-            print response.read()
-        time.sleep(10)
+        except Exception, e:
+            print "error2"
         pass
     pass
 

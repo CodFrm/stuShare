@@ -164,7 +164,7 @@ class STRadius():
                                 str(time.time()) + ' where session_id=%s', (AuthDict['Acct-Output-Octets'], AuthDict['Acct-Input-Octets'],
                                                                             AuthDict['Acct-Session-Time'], AuthDict['Acct-Session-Id']))
                     except Exception, e:
-                        print 'error!!!' + e[0]
+                        print 'error!!!'
                     print '结束计费'
                 retCode = '\x05'
             print AuthDict

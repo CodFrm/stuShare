@@ -10,7 +10,7 @@ import urllib
 #  openvpn-status 文件路径
 OVSPATH = '/etc/openvpn/openvpn-status.log'
 U = '201617370142'
-P = 'zouqin123'
+P = ''
 #  定义进出设备(eth0 内网，eth1外网)
 IDEV = "tun0"
 ODEV = "ens33"

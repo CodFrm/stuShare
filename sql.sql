@@ -81,7 +81,7 @@ CREATE TABLE `share_config` (
 -- ----------------------------
 INSERT INTO `share_config` VALUES ('base_auth', '1');
 INSERT INTO `share_config` VALUES ('email', '1511796355');
-INSERT INTO `share_config` VALUES ('movie_notice_msg', '每天登录自动送观影卷\n资源不定时更新\n想看什么剧可以通过反馈\n一个局域网内分享影片应用\n支持本应用的请加交流群：663535674');
+INSERT INTO `share_config` VALUES ('movie_notice_msg', '每天登录自动送观影卷\n资源不定时更新\n想看什么剧可以通过反馈\n一个局域网内分享影片应用\n支持本应用的请加交流群：663534674');
 INSERT INTO `share_config` VALUES ('movie_notice_time', '1511871270');
 INSERT INTO `share_config` VALUES ('movie_update_u', 'http://movie.icodef.com/static/app-release4d72.apk');
 INSERT INTO `share_config` VALUES ('movie_update_v', '11');
@@ -319,8 +319,8 @@ CREATE TABLE `share_user` (
 -- ----------------------------
 -- Records of share_user
 -- ----------------------------
-INSERT INTO `share_user` VALUES ('1', 'Farmer', 'zouqin123', 'code.farmer@qq.com', '1504440899', '1.56');
-INSERT INTO `share_user` VALUES ('2', 'admin', '741852963', '98765@qq.qq', '1504490641', '0.10');
+INSERT INTO `share_user` VALUES ('1', 'Farmer', '', 'code.farmer@qq.com', '1504440899', '1.56');
+INSERT INTO `share_user` VALUES ('2', 'admin', '', '98765@qq.qq', '1504490641', '0.10');
 
 -- ----------------------------
 -- Table structure for share_usergroup
